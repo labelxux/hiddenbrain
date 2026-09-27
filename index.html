@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hidden Brain</title>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#04060b"/><circle cx="50" cy="50" r="20" fill="none" stroke="#bcd0ff" stroke-width="1.5"/><circle cx="50" cy="50" r="5" fill="#eef3ff"/></svg></template>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#04060b;color:#e8ecf4;overflow:hidden;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#bcd0ff;text-decoration:none}
+a:hover{color:#ffffff}
+button{font:inherit}
+input::placeholder{color:#5d6780}
+::selection{background:rgba(188,208,255,.25)}
+@keyframes hbIn{from{opacity:0;filter:blur(10px);transform:translateY(10px)}to{opacity:1;filter:blur(0);transform:none}}
+@keyframes hbDeny{0%{opacity:0;letter-spacing:.9em}25%{opacity:1}35%{opacity:.2}45%{opacity:1}100%{opacity:1;letter-spacing:.42em}}
+[data-reading="on"] *{animation:none!important}
+[data-reading="on"] h1{font-family:'Geist',system-ui,sans-serif!important;font-weight:500!important;font-size:clamp(30px,3.2vw,40px)!important;line-height:1.15!important;letter-spacing:-.02em!important;margin:12px 0 18px!important}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
+</style>
+</helmet>
+<div data-reading="{{ readingAttr }}" style="position:fixed;inset:0;filter:{{ rootFilter }};transition:filter .6s ease;background:{{ rootBg }};font-family:'Geist',system-ui,sans-serif;color:#e8ecf4;overflow:hidden">
+  <canvas ref="{{ canvasRef }}" onPointerDown="{{ touchBrain }}" aria-hidden="true" style="cursor:{{ canvasCursor }};position:absolute;inset:0;width:100%;height:100%;display:{{ canvasDisplay }}"></canvas>
+
+  <sc-if value="{{ showShadeWide }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:0;left:0;bottom:0;width:min(820px,100%);background:linear-gradient(90deg,rgba(4,6,11,.94) 0%,rgba(4,6,11,.78) 55%,rgba(4,6,11,0) 100%);pointer-events:none"></div>
+  </sc-if>
+  <sc-if value="{{ showResultsShade }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 86% 24%,rgba(4,6,11,0) 0%,rgba(4,6,11,.55) 28%,rgba(4,6,11,.82) 60%);pointer-events:none;animation:hbIn 2s ease both"></div>
+  </sc-if>
+  <sc-if value="{{ showShadeNarrow }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,6,11,0) 0%,rgba(4,6,11,0) 34%,rgba(4,6,11,.9) 50%,rgba(4,6,11,.96) 100%);pointer-events:none"></div>
+  </sc-if>
+
+  <div style="position:absolute;top:0;left:0;right:0;height:96px;background:{{ bandBg }};z-index:5;pointer-events:none"></div>
+  <div style="position:absolute;top:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;z-index:6;pointer-events:none">
+    <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.28em;color:#5f6a82;text-transform:uppercase">The Hidden Brain</div>
+    <div role="toolbar" aria-label="Experience controls" style="pointer-events:auto;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;border:1px solid rgba(188,208,255,.14);background:rgba(8,12,21,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
+      <button onClick="{{ togglePause }}" aria-label="{{ pauseAria }}" title="{{ pauseAria }}" aria-pressed="{{ pausedOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ pauseBg }};color:{{ pauseFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ pausedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg></sc-if><sc-if value="{{ playingOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg></sc-if></button>
+      <button onClick="{{ toggleMute }}" aria-label="{{ soundAria }}" title="{{ soundAria }}" aria-pressed="{{ mutedOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ soundBg }};color:{{ soundFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ soundOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/></svg></sc-if><sc-if value="{{ mutedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 6l3.5 4M14.5 6L11 10"/></svg></sc-if></button>
+      <span style="width:1px;height:18px;background:rgba(188,208,255,.14);margin:0 4px"></span>
+      <button onClick="{{ toggleReading }}" aria-label="{{ readAria }}" title="{{ readAria }}" aria-pressed="{{ readingOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ readBg }};color:{{ readFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M9.5 2.5V5H12M6 8h4M6 10.5h4"/></svg></button>
+      <sc-if value="{{ showRestartTop }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:2px"><span style="width:1px;height:18px;background:rgba(188,208,255,.14);margin:0 4px"></span><button onClick="{{ restart }}" aria-label="Start over" title="Start over" style="height:36px;border-radius:999px;border:0;padding:0 14px 0 10px;display:flex;align-items:center;gap:8px;background:transparent;color:#98a2b8;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"/><path d="M3 2.5v2.5h2.5"/></svg><span>Start over</span></button></span>
+      </sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:32px;pointer-events:none;opacity:{{ panelOpacity }};filter:blur({{ panelBlur }});transition:opacity .8s ease,filter .8s ease">
+      <div style="max-width:760px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:30px">
+        <sc-if value="{{ intro1 }}" hint-placeholder-val="{{ true }}">
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,6.6vw,96px);line-height:1;letter-spacing:-.015em;margin:0;color:#eef2fa;text-wrap:balance;animation:hbIn 2.6s ease both">What do you know that your tools don’t?</h1>
+        </sc-if>
+        <sc-if value="{{ intro2 }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:17px;line-height:1.75;color:#98a2b8;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="color:#d5dbe8;animation:hbIn 1.6s ease both">Your team already has intelligence.</span>
+            <span style="display:flex;flex-wrap:wrap;justify-content:center;gap:0 8px">
+              <span style="animation:hbIn 1.4s .5s ease both">It lives in decisions.</span>
+              <span style="animation:hbIn 1.4s .8s ease both">Patterns.</span>
+              <span style="animation:hbIn 1.4s 1.1s ease both">Documents.</span>
+              <span style="animation:hbIn 1.4s 1.4s ease both">Tools.</span>
+              <span style="animation:hbIn 1.4s 1.7s ease both">Processes.</span>
+              <span style="animation:hbIn 1.4s 2.1s ease both;color:#d5dbe8">And people.</span>
+            </span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ intro3 }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:24px;line-height:1.4;color:#c3cadb;animation:hbIn 1.8s ease both;text-wrap:balance">The challenge isn’t creating more knowledge.<br>It’s making what you already know usable.</div>
+        </sc-if>
+        <sc-if value="{{ intro4 }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ enter }}" style="pointer-events:auto;margin-top:10px;padding:16px 30px;border-radius:999px;border:1px solid rgba(222,231,255,.45);background:rgba(8,12,22,.4);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;cursor:pointer;transition:background .5s ease,border-color .5s ease,box-shadow .5s ease;animation:hbIn 1.6s ease both" style-hover="background:rgba(188,208,255,.1);border-color:rgba(235,241,255,.8);box-shadow:0 0 40px rgba(150,180,255,.25)">Enter the Brain</button>
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.6s .4s ease both">7 steps · about 10 minutes · you leave with a blueprint and 7 prompts</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;left:28px;right:28px;bottom:24px;display:flex;justify-content:center;z-index:6">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#5f6a82;justify-content:center;animation:hbIn 2s 1s ease both">
+      <span>© {{ year }} {{ authorName }} · All rights reserved</span>
+      <a href="{{ linkedinHref }}" target="_blank" rel="noopener" style="color:#98a2b8;text-decoration:none" style-hover="color:#ffffff">LinkedIn ↗</a>
+      <a href="{{ mailHref }}" style="color:#98a2b8;text-decoration:none;text-transform:none;letter-spacing:.06em;font-size:11px" style-hover="color:#ffffff">{{ authorEmail }}</a>
+    </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ inQuest }}" hint-placeholder-val="{{ false }}">
+    <div ref="{{ panelRef }}" style="position:absolute;top:0;left:0;bottom:0;width:{{ panelW }};overflow-y:auto;overflow-x:hidden;padding:{{ panelPad }};scrollbar-width:none;z-index:3">
+      <div style="max-width:{{ pageMax }};margin:{{ pageMargin }};padding:{{ pagePad }};background:{{ pageBg }};border:1px solid {{ pageBd }};border-radius:{{ pageRadius }};box-shadow:{{ pageShadow }};opacity:{{ panelOpacity }};filter:blur({{ panelBlur }});transform:translateY({{ panelShift }});transition:{{ panelTrans }}">
+
+      <sc-if value="{{ readingOn }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-bottom:48px;padding-bottom:22px;border-bottom:1px solid #26241f">
+          <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3"><span>The Hidden Brain · Reading edition</span><span>{{ docStep }}</span></div>
+          <div style="font-family:'Instrument Serif',serif;font-size:19px;line-height:1.4;color:#98a2b8;margin-top:12px;font-style:italic">A seven-step guide to turning your team’s knowledge into a first AI workflow.</div>
+          <sc-if value="{{ tocInline }}" hint-placeholder-val="{{ false }}"><div role="navigation" aria-label="Contents" style="display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:20px">
+            <sc-for list="{{ tocItems }}" as="t" hint-placeholder-count="7">
+              <button onClick="{{ t.onClick }}" disabled="{{ t.disabled }}" aria-current="{{ t.current }}" style="display:flex;gap:8px;align-items:baseline;padding:4px 0;border:0;border-bottom:1px solid {{ t.bc }};background:transparent;color:{{ t.fc }};font-size:14px;cursor:{{ t.cursor }}" style-hover="color:#ffffff"><span style="font-family:'Geist Mono',monospace;font-size:10px;color:#7d89a3">{{ t.no }}</span><span>{{ t.n }}</span></button>
+            </sc-for>
+          </div></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isS1 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 01 of 07 · Signal</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Start with what repeats.</h1>
+          <p style="font-size:17px;line-height:1.6;color:#a2abbf;margin:0 0 8px;max-width:30em;text-wrap:pretty;animation:hbIn 1.4s .3s ease both">AI is most useful where work happens again and again. Before thinking about tools, notice the repetition.</p>
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:27px;line-height:1.3;color:#e8ecf4;margin:26px 0 30px;max-width:18em;animation:hbIn 1.4s .5s ease both">What keeps repeating in your week?</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;margin:-14px 0 18px;animation:hbIn 1.4s .6s ease both">Select all that sound familiar</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+            <sc-for list="{{ sigChips }}" as="c" hint-placeholder-count="9">
+              <button onClick="{{ c.onClick }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" aria-pressed="{{ c.sel }}" style="display:flex;align-items:center;gap:11px;padding:9px 17px 9px 13px;margin-left:{{ c.ml }};border-radius:999px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fc }};font-size:14.5px;line-height:1.3;text-align:left;cursor:pointer;transition:border-color .5s ease,background .5s ease,color .5s ease;animation:hbIn 1s ease both;animation-delay:{{ c.delay }}" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ c.dot }};box-shadow:{{ c.glow }};transition:all .5s ease"></span><span>{{ c.label }}</span></button>
+            </sc-for>
+            <sc-if value="{{ customClosed }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ openCustom }}" style="display:flex;align-items:center;gap:11px;padding:9px 17px 9px 13px;margin-left:18px;border-radius:999px;border:1px dashed rgba(188,208,255,.22);background:transparent;color:#7d89a3;font-size:14.5px;cursor:pointer;animation:hbIn 1s 1s ease both" style-hover="color:#e8ecf4;border-color:rgba(222,231,255,.4)"><span style="font-family:'Geist Mono',monospace">+</span><span>Add my own</span></button>
+            </sc-if>
+            <sc-if value="{{ customOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:11px;padding:0 17px 0 13px;margin-left:18px;border-radius:999px;border:1px solid {{ customBc }};background:rgba(5,8,14,.5);width:min(420px,100%);animation:hbIn .6s ease both"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ customDot }};box-shadow:{{ customGlow }}"></span><input value="{{ custom }}" onChange="{{ onCustom }}" autoFocus="{{ true }}" placeholder="What else keeps repeating?" style="flex:1;min-width:0;background:transparent;border:0;outline:none;color:#f3f6fc;font:inherit;font-size:14.5px;padding:10px 0"></div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS2 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 02 of 07 · Memory</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Your knowledge already exists.</h1>
+          <p style="font-size:17px;line-height:1.6;color:#a2abbf;margin:0;max-width:30em;animation:hbIn 1.4s .3s ease both">AI can only use what it can see. Most of what your team knows is spread across people, files and tools.</p>
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:27px;line-height:1.3;color:#e8ecf4;margin:26px 0 30px;max-width:18em;animation:hbIn 1.4s .5s ease both">Where does your team’s knowledge live today?</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;margin:-14px 0 18px;animation:hbIn 1.4s .6s ease both">Select at least two</div>
+          <div style="display:flex;flex-wrap:wrap;gap:9px;max-width:520px">
+            <sc-for list="{{ srcChips }}" as="c" hint-placeholder-count="14">
+              <button onClick="{{ c.onClick }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" aria-pressed="{{ c.sel }}" style="display:flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fc }};font-size:14.5px;cursor:pointer;transition:border-color .5s ease,background .5s ease,color .5s ease;animation:hbIn 1s ease both;animation-delay:{{ c.delay }}" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ c.dot }};box-shadow:{{ c.glow }};transition:all .5s ease"></span><span>{{ c.label }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS3 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 03 of 07 · Structure</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Sort it, so AI can use it.</h1>
+          <div style="font-family:'Instrument Serif',serif;font-size:27px;line-height:1.3;color:#e8ecf4;margin:0 0 14px;animation:hbIn 1.4s .3s ease both">A pile of documents isn’t a brain.<br><span style="font-style:italic;color:#bcd0ff">Structure is.</span></div>
+          <p style="font-size:16px;line-height:1.6;color:#98a2b8;margin:0;max-width:31em;text-wrap:pretty;animation:hbIn 1.4s .5s ease both">Giving a model every document doesn’t make it useful. It needs to know what each piece is — a rule you can’t break is not the same as a habit, and a decision is not the same as an opinion.</p>
+          <div style="margin-top:34px;padding:16px 0 16px 18px;border-left:1px solid rgba(188,208,255,.25);max-width:31em;animation:hbIn 1.2s .6s ease both">
+            <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:10.5px;letter-spacing:.22em;color:#bcd0ff;margin-bottom:8px">Your task · sort 8 cards</div>
+            <div style="font-size:15.5px;line-height:1.55;color:#d5dbe8;text-wrap:pretty">One card at a time appears below, each with a real piece of team knowledge. <span style="color:#fff">Read it, then tap the category it belongs to.</span> The next card comes up on its own.</div>
+            <div style="font-size:13px;line-height:1.5;color:#7d89a3;margin-top:8px">There’s no wrong answer — and you can change any card later.</div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;margin-top:34px;max-width:520px;animation:hbIn 1.2s .7s ease both">
+            <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#c9d3ea;white-space:nowrap">{{ sortProgress }}</span>
+            <span style="flex:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px">
+              <sc-for list="{{ sortSegs }}" as="g" hint-placeholder-count="8">
+                <span style="height:3px;border-radius:2px;background:{{ g.bg }};box-shadow:{{ g.glow }};transition:background .5s ease"></span>
+              </sc-for>
+            </span>
+          </div>
+
+          <sc-if value="{{ hasFrag }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:22px;max-width:520px">
+              <div style="position:relative;padding-bottom:14px">
+                <div style="position:absolute;left:16px;right:16px;bottom:0;height:24px;border-radius:12px;border:1px solid rgba(188,208,255,.08);background:rgba(10,14,24,.6)"></div>
+                <div style="position:absolute;left:8px;right:8px;bottom:7px;height:24px;border-radius:12px;border:1px solid rgba(188,208,255,.12);background:rgba(10,14,24,.75)"></div>
+                <div key="{{ curFrag.key }}" style="position:relative;padding:22px 24px 26px;border-radius:12px;border:1px solid rgba(222,231,255,.32);background:linear-gradient(180deg,rgba(18,24,40,.96),rgba(10,14,24,.96));box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.02) inset;animation:hbIn .7s ease both">
+                  <div style="display:flex;justify-content:space-between;gap:12px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:#7d89a3"><span>Card {{ curFrag.no }} of 8</span><span>From {{ curFrag.from }}</span></div>
+                  <div style="font-family:'Instrument Serif',serif;font-size:29px;line-height:1.22;color:#f3f6fc;margin-top:16px;text-wrap:balance">“{{ curFrag.t }}”</div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:22px 0 12px">
+                <span style="font-family:'Instrument Serif',serif;font-size:21px;color:#e8ecf4">Where does this card belong? ↓</span>
+                <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ undoSort }}" style="padding:6px 0;border:0;background:transparent;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:#98a2b8;cursor:pointer;white-space:nowrap" style-hover="color:#ffffff">↶ Undo last</button>
+                </sc-if>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+                <sc-for list="{{ areaBtns }}" as="a" hint-placeholder-count="6">
+                  <button onClick="{{ a.onClick }}" onMouseEnter="{{ a.onEnter }}" onMouseLeave="{{ a.onLeave }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:14px 14px 16px;border:1px dashed {{ a.bc }};border-radius:10px;background:rgba(5,8,14,.45);color:#e8ecf4;cursor:pointer;text-align:left;transition:border-color .3s ease,background .3s ease,transform .2s ease" style-hover="border-style:solid;border-color:rgba(222,231,255,.6);background:rgba(188,208,255,.07);transform:translateY(-2px)">
+                    <span style="display:flex;align-items:center;gap:9px;width:100%"><span style="flex:none;width:7px;height:7px;border-radius:50%;background:{{ a.col }};box-shadow:{{ a.glow }}"></span><span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase">{{ a.n }}</span><span style="margin-left:auto;font-family:'Geist Mono',monospace;font-size:10.5px;color:#7d89a3">{{ a.cnt }}</span></span>
+                    <span style="font-size:13px;line-height:1.4;color:#8e98ad">{{ a.d }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ hasLastSort }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px;display:flex;align-items:center;gap:9px;font-size:13px;color:#8e98ad">
+                  <span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ lastSort.col }};box-shadow:0 0 8px {{ lastSort.col }}"></span>
+                  <span>Last card went to <span style="color:#e8ecf4">{{ lastSort.a }}</span>.</span>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ allSorted }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:26px;max-width:540px;animation:hbIn 1s ease both">
+              <div style="font-family:'Instrument Serif',serif;font-size:25px;color:#eef2fa">All eight cards sorted.</div>
+              <div style="font-size:14px;line-height:1.55;color:#8e98ad;margin-top:6px">Review your choices. Tap a different category on any card to move it.</div>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
+                <sc-for list="{{ sortedCards }}" as="c" hint-placeholder-count="8">
+                  <div onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" style="padding:14px 16px;border-radius:10px;border:1px solid rgba(188,208,255,.12);background:rgba(8,12,21,.62)">
+                    <div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:'Geist Mono',monospace;font-size:10px;color:#5f6a82">{{ c.no }}</span><span style="font-size:14.5px;line-height:1.45;color:#dfe4ee">{{ c.t }}</span></div>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-left:22px">
+                      <sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="6">
+                        <button onClick="{{ o.onClick }}" aria-pressed="{{ o.sel }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid {{ o.bc }};background:{{ o.bg }};color:{{ o.fc }};font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .3s ease" style-hover="color:#ffffff;border-color:rgba(222,231,255,.4)"><span style="width:5px;height:5px;border-radius:50%;background:{{ o.col }}"></span>{{ o.n }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ resetSort }}" style="margin-top:16px;padding:8px 0;border:0;background:transparent;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:#98a2b8;cursor:pointer" style-hover="color:#ffffff">↺ Sort all cards again</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS4 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 04 of 07 · Synapse</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Turn knowledge into action.</h1>
+          <p style="font-size:17px;line-height:1.6;color:#a2abbf;margin:0;max-width:30em;animation:hbIn 1.4s .3s ease both">Knowledge only matters when it changes what happens next. This step has two parts: first the big picture, then one workflow in detail.</p>
+          <div style="display:flex;gap:8px;margin-top:22px;animation:hbIn 1.4s .4s ease both">
+            <span style="padding:6px 12px;border-radius:999px;border:1px solid {{ p1Bc }};font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:9.5px;color:{{ p1Fc }}">1 · Capabilities</span>
+            <span style="padding:6px 12px;border-radius:999px;border:1px solid {{ p2Bc }};font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:9.5px;color:{{ p2Fc }}">2 · One workflow</span>
+          </div>
+          <div style="margin-top:44px;animation:hbIn 1.4s .5s ease both">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start">
+            <span style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(222,231,255,.55);display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:13px;color:#eef2fa">1</span>
+            <div><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#bcd0ff">Part 1 of 2 · The big picture</div><div style="font-family:'Instrument Serif',serif;font-size:30px;line-height:1.15;color:#eef2fa;margin-top:8px;max-width:16em">What should AI help your team do?</div><div style="font-size:15px;line-height:1.55;color:#98a2b8;margin-top:8px;max-width:30em;text-wrap:pretty">Think broadly — everything that would be useful across your team. Choose as many as you like.</div></div>
+          </div>
+          </div>
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;margin:22px 0 16px 60px;animation:hbIn 1.4s .6s ease both">{{ actHint }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:9px;max-width:540px;padding-left:60px">
+            <sc-for list="{{ actChips }}" as="c" hint-placeholder-count="10">
+              <button onClick="{{ c.onClick }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" aria-pressed="{{ c.sel }}" style="display:flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fc }};font-size:14.5px;cursor:pointer;transition:border-color .5s ease,background .5s ease,color .5s ease;animation:hbIn 1s ease both;animation-delay:{{ c.delay }}" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ c.dot }};box-shadow:{{ c.glow }};transition:all .5s ease"></span><span>{{ c.label }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ showP1Continue }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:30px 0 0 60px;animation:hbIn 1s ease both">
+              <button onClick="{{ goPart2 }}" style="display:flex;align-items:center;gap:12px;padding:13px 22px 13px 16px;border-radius:999px;border:1px solid rgba(222,231,255,.5);background:rgba(188,208,255,.06);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:10.5px;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);box-shadow:0 0 30px rgba(150,180,255,.2)"><span style="font-size:14px">↓</span>Done — now let’s zoom in on one</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasPart2 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:hbIn 1.4s ease both">
+              <div style="display:flex;align-items:center;gap:14px;margin:96px 0 64px">
+                <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,0),rgba(188,208,255,.3))"></span>
+                <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-size:9.5px;color:#7d89a3">From many to one</span>
+                <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.3),rgba(188,208,255,0))"></span>
+              </div>
+              <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start">
+            <span style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(222,231,255,.55);display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:13px;color:#eef2fa">2</span>
+            <div><div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#bcd0ff">Part 2 of 2 · Practice workflow</div><div style="font-family:'Instrument Serif',serif;font-size:30px;line-height:1.15;color:#eef2fa;margin-top:8px;max-width:16em">Now design one workflow, end to end.</div><div style="font-size:15px;line-height:1.55;color:#98a2b8;margin-top:8px;max-width:30em;text-wrap:pretty">You chose several things AI could help with. Pick one real task from your work and design it properly — this is the workflow we’ll practise on.</div></div>
+          </div>
+              <div style="padding-left:60px">
+              <div style="margin-top:30px">
+                <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#c9d3ea">Which capability is it about?</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+                  <sc-for list="{{ focusChips }}" as="c" hint-placeholder-count="3">
+                    <button onClick="{{ c.onClick }}" aria-pressed="{{ c.sel }}" style="display:flex;align-items:center;gap:9px;padding:8px 14px 8px 11px;border-radius:999px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fc }};font-size:14px;cursor:pointer;transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.45);color:#ffffff"><span style="width:12px;height:12px;border-radius:50%;border:1px solid {{ c.ring }};display:flex;align-items:center;justify-content:center"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.dot }}"></span></span>{{ c.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="margin-top:22px;padding:14px 0 14px 18px;border-left:1px solid rgba(188,208,255,.25);max-width:31em">
+                <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#bcd0ff;margin-bottom:6px">Why it matters</div>
+                <div style="font-size:14px;line-height:1.55;color:#c9d0de;text-wrap:pretty">At the end you get a personal report. Your blueprint and all seven prompts will be written around this workflow, so the more real it is, the more useful they’ll be.</div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:14px;margin-top:26px;max-width:540px">
+                <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#c9d3ea;white-space:nowrap">Step {{ wfStepNo }} of {{ wfTotal }}</span>
+                <span style="flex:1;height:1px;background:rgba(188,208,255,.12);position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ wfPct }};background:linear-gradient(90deg,rgba(188,208,255,.3),#eef3ff);box-shadow:0 0 8px rgba(190,210,255,.8);transition:width .9s ease"></span></span>
+              </div>
+              <div style="margin-top:26px;max-width:540px">
+                <sc-for list="{{ wfSteps }}" as="r" hint-placeholder-count="7">
+                  <div onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="display:grid;grid-template-columns:30px minmax(0,1fr);gap:16px;opacity:{{ r.op }};transition:opacity .5s ease">
+                    <div style="display:flex;flex-direction:column;align-items:center">
+                      <span style="flex:none;width:19px;height:19px;margin-top:1px;border-radius:50%;border:1px solid {{ r.ring }};background:#05070d;display:flex;align-items:center;justify-content:center;box-shadow:{{ r.ringGlow }};transition:all .5s ease"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.dot }};box-shadow:{{ r.glow }};transition:all .5s ease"></span></span>
+                      <span style="flex:1;width:1px;min-height:18px;margin:4px 0;background:{{ r.line }};opacity:{{ r.lineOp }};transition:background .8s ease"></span>
+                    </div>
+                    <div style="padding-bottom:26px;min-width:0">
+                      <button onClick="{{ r.onOpen }}" disabled="{{ r.locked }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:0;border:0;background:transparent;text-align:left;cursor:{{ r.cursor }};color:inherit">
+                        <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:{{ r.lc }}">{{ r.no }} · {{ r.n }}</span>
+                        <sc-if value="{{ r.showEdit }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#5f6a82">Edit</span></sc-if>
+                      </button>
+                      <sc-if value="{{ r.showAns }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:15.5px;line-height:1.45;color:#e8ecf4;margin-top:7px">{{ r.ans }}</div>
+                      </sc-if>
+                      <sc-if value="{{ r.showQ }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:14px;line-height:1.45;color:#6b7590;margin-top:7px">{{ r.q }}</div>
+                      </sc-if>
+                      <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:10px;animation:hbIn .7s ease both">
+                          <div style="font-family:'Instrument Serif',serif;font-size:24px;line-height:1.25;color:#f3f6fc;margin-bottom:14px">{{ r.q }}</div>
+                          <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <sc-for list="{{ r.opts }}" as="o" hint-placeholder-count="3">
+                              <button onClick="{{ o.onClick }}" style="padding:8px 14px;border-radius:999px;border:1px solid {{ o.bc }};background:{{ o.bg }};color:{{ o.fc }};font-size:13.5px;text-align:left;cursor:pointer;transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4">{{ o.label }}</button>
+                            </sc-for>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+                            <input value="{{ r.custom }}" onChange="{{ r.onInput }}" onKeyDown="{{ r.onKey }}" placeholder="Or in your own words" style="flex:1;min-width:0;background:transparent;border:0;border-bottom:1px solid rgba(188,208,255,.2);outline:none;color:#f3f6fc;font:inherit;font-size:14.5px;padding:10px 0">
+                            <sc-if value="{{ r.canGo }}" hint-placeholder-val="{{ false }}">
+                              <button onClick="{{ r.onGo }}" aria-label="Next step" style="flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(222,231,255,.45);background:transparent;color:#f3f6fc;font-family:'Geist Mono',monospace;cursor:pointer;animation:hbIn .5s ease both" style-hover="background:rgba(188,208,255,.1)">↓</button>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS5 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <sc-if value="{{ bI0 }}" hint-placeholder-val="{{ false }}">
+            <div style="padding-top:18vh;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.4s ease both">Connecting to an external AI model…</div>
+          </sc-if>
+          <sc-if value="{{ bI1 }}" hint-placeholder-val="{{ false }}">
+            <div style="padding-top:18vh;font-family:'Geist Mono',monospace;font-weight:500;font-size:clamp(22px,2.6vw,34px);letter-spacing:.42em;text-transform:uppercase;color:rgb(240,98,86);animation:hbDeny 1.6s ease both">Connection denied</div>
+          </sc-if>
+          <sc-if value="{{ bI2 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;gap:18px;flex-wrap:wrap;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;animation:hbIn 1.2s ease both"><span style="color:#7d89a3">Step 05 of 07 · Boundary</span><span style="color:rgb(240,98,86)">Connection denied</span></div>
+              <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Work within your limits.</h1>
+              <div style="font-family:'Instrument Serif',serif;font-size:27px;line-height:1.3;color:#e8ecf4;margin:0 0 14px;animation:hbIn 1.4s .3s ease both">The ideal setup may not be allowed.<br><span style="font-style:italic;color:#bcd0ff">A good workflow still is.</span></div>
+              <p style="font-size:16px;line-height:1.6;color:#98a2b8;margin:0;max-width:31em;animation:hbIn 1.4s .5s ease both">Security, privacy and permissions decide what can connect to what. They aren’t obstacles to work around — they’re part of the design.</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px;margin:30px 0 14px;max-width:540px;animation:hbIn 1.4s .7s ease both">
+                <sc-for list="{{ classLegend }}" as="l" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column;gap:5px"><span style="display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ l.col }}"><span style="width:14px;height:1px;background:{{ l.col }}"></span>{{ l.n }}</span><span style="font-size:12.5px;line-height:1.4;color:#7d89a3">{{ l.d }}</span></div>
+                </sc-for>
+              </div>
+              <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;margin:26px 0 4px;color:#c9d3ea">For each connection, choose how it’s allowed to happen</div>
+              <div style="max-width:540px">
+                <sc-for list="{{ connRows }}" as="r" hint-placeholder-count="6">
+                  <div style="padding:15px 0;border-top:1px solid rgba(188,208,255,.08);animation:hbIn 1s ease both;animation-delay:{{ r.delay }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}">
+                    <div style="font-size:15px;line-height:1.4;color:#d5dbe8;margin-bottom:10px">{{ r.t }}</div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      <sc-for list="{{ r.opts }}" as="o" hint-placeholder-count="4">
+                        <button onClick="{{ o.onClick }}" aria-pressed="{{ o.sel }}" style="padding:7px 12px;border-radius:999px;border:1px solid {{ o.bc }};background:{{ o.bg }};color:{{ o.fc }};font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="color:#e8ecf4">{{ o.n }}</button>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ r.hasBridge }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:10px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgb(120,210,220);animation:hbIn 1s ease both;animation-delay:{{ r.bDelay }}">↳ Bridge via {{ r.bridge }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ allClassified }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:40px;animation:hbIn 1.4s ease both">
+                  <div style="font-family:'Instrument Serif',serif;font-size:32px;line-height:1.2;color:#eef2fa">Blocked doesn’t mean impossible.</div>
+                  <div style="font-size:15px;line-height:1.55;color:#98a2b8;margin-top:10px;max-width:31em">Each blocked connection now has a safe route around it. These are the routes you can use:</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;max-width:540px">
+                    <sc-for list="{{ bridgeChips }}" as="b" hint-placeholder-count="8">
+                      <span style="padding:7px 13px;border-radius:999px;border:1px solid {{ b.bc }};color:{{ b.fc }};font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;animation:hbIn 1s ease both;animation-delay:{{ b.delay }}">{{ b.n }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS6 }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 06 of 07 · Network</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Design the flow, not the stack.</h1>
+          <p style="font-size:17px;line-height:1.6;color:#a2abbf;margin:0;max-width:30em;animation:hbIn 1.4s .3s ease both">Tools change every year. What you’re really designing is how knowledge moves between them.</p>
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:25px;color:#e8ecf4;margin:30px 0 18px;animation:hbIn 1.4s .5s ease both">What kind of knowledge needs to move?</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3;margin:-6px 0 18px;animation:hbIn 1.4s .6s ease both">Pick one</div>
+          <div style="display:flex;flex-wrap:wrap;gap:9px;max-width:540px">
+            <sc-for list="{{ moveChips }}" as="c" hint-placeholder-count="6">
+              <button onClick="{{ c.onClick }}" aria-pressed="{{ c.sel }}" style="display:flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fc }};font-size:14.5px;cursor:pointer;transition:border-color .5s ease,background .5s ease,color .5s ease;animation:hbIn 1s ease both;animation-delay:{{ c.delay }}" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ c.dot }};box-shadow:{{ c.glow }};transition:all .5s ease"></span><span>{{ c.label }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasMove }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:44px;max-width:540px;animation:hbIn 1.4s ease both">
+              <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:25px;color:#e8ecf4;margin-bottom:6px">Where does it go at each stop?</div>
+              <div style="font-size:14px;line-height:1.55;color:#7d89a3;margin-bottom:14px">Choose a tool for each stop. The Brain stays fixed in the middle.</div>
+              <sc-for list="{{ netSlots }}" as="sl" hint-placeholder-count="6">
+                <div>
+                  <button onClick="{{ sl.onClick }}" onMouseEnter="{{ sl.onEnter }}" onMouseLeave="{{ sl.onLeave }}" style="display:grid;grid-template-columns:104px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:13px 0;border:0;border-top:1px solid rgba(188,208,255,.08);background:transparent;color:inherit;text-align:left;cursor:{{ sl.cursor }}">
+                    <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:{{ sl.lc }}">{{ sl.n }}</span>
+                    <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;color:{{ sl.vc }}">{{ sl.v }}</span><span style="font-size:12.5px;color:#6b7590">{{ sl.d }}</span></span>
+                    <span style="width:7px;height:7px;border-radius:50%;background:{{ sl.dot }};box-shadow:{{ sl.glow }};transition:all .5s ease"></span>
+                  </button>
+                  <sc-if value="{{ sl.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-wrap:wrap;gap:7px;padding:2px 0 16px 118px;animation:hbIn .6s ease both">
+                      <sc-for list="{{ sl.tools }}" as="t" hint-placeholder-count="10">
+                        <button onClick="{{ t.onClick }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ t.bc }};background:{{ t.bg }};color:{{ t.fc }};font-size:13px;cursor:pointer;transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.4);color:#e8ecf4">{{ t.label }}</button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showInsight }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:56px;animation:hbIn 1.8s ease both">
+          <sc-for list="{{ insight }}" as="ln" hint-placeholder-count="2">
+            <div style="font-family:'Instrument Serif',serif;font-size:clamp(28px,2.7vw,36px);line-height:1.18;color:{{ ln.c }};font-style:{{ ln.fs }};max-width:15em">{{ ln.t }}</div>
+          </sc-for>
+          <sc-if value="{{ showUnlock }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ unlock }}" style="margin-top:32px;display:flex;align-items:center;gap:14px;padding:15px 24px 15px 18px;border-radius:999px;border:1px solid rgba(222,231,255,.5);background:rgba(8,12,22,.5);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:all .5s ease;animation:hbIn 1.2s .6s ease both" style-hover="background:rgba(188,208,255,.1);box-shadow:0 0 40px rgba(150,180,255,.25);border-color:rgba(240,244,255,.85)"><span style="width:8px;height:8px;border-radius:50%;background:#eef3ff;box-shadow:0 0 12px 3px rgba(190,210,255,.8)"></span>{{ unlockLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showArtifact }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:52px;padding-top:30px;border-top:1px solid rgba(188,208,255,.14);max-width:560px;animation:hbIn 1.4s ease both">
+          <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#bcd0ff;display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#eef3ff;box-shadow:0 0 10px 2px rgba(190,210,255,.8)"></span>{{ art.eyebrow }}</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.1;color:#f3f6fc;margin:14px 0 8px">{{ art.title }}</div>
+          <div style="font-size:14.5px;line-height:1.55;color:#8e98ad;max-width:32em">{{ art.purpose }}</div>
+          <pre style="white-space:pre-wrap;word-break:break-word;font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.7;color:#c3cadb;background:rgba(6,9,16,.72);border:1px solid rgba(188,208,255,.1);border-radius:4px;padding:18px 20px;max-height:280px;overflow:auto;margin:20px 0 16px;scrollbar-width:thin">{{ art.text }}</pre>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <button onClick="{{ art.onCopy }}" style="padding:12px 20px;border-radius:999px;border:1px solid rgba(222,231,255,.4);background:transparent;color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.1)">{{ art.copyLabel }}</button>
+            <sc-if value="{{ art.isBrain }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ art.onBrainGen }}" style="padding:12px 20px;border-radius:999px;border:1px solid rgba(188,208,255,.18);background:transparent;color:#bcd0ff;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.4)">{{ art.brainGenLabel }}</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{ art.brainOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:22px;animation:hbIn 1s ease both">
+              <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3">Your brain prompt — built from your own sources</div>
+              <pre style="white-space:pre-wrap;word-break:break-word;font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.7;color:#c3cadb;background:rgba(6,9,16,.72);border:1px solid rgba(188,208,255,.1);border-radius:4px;padding:18px 20px;max-height:260px;overflow:auto;margin:12px 0 12px">{{ art.brainText }}</pre>
+              <button onClick="{{ art.onBrainCopy }}" style="padding:12px 20px;border-radius:999px;border:1px solid rgba(222,231,255,.4);background:transparent;color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer" style-hover="background:rgba(188,208,255,.1)">{{ art.brainCopyLabel }}</button>
+            </div>
+          </sc-if>
+          <div style="margin:72px 0 0 22px;width:1px;height:120px;background:linear-gradient(180deg,rgba(188,208,255,0),rgba(188,208,255,.35))"></div>
+          <button onClick="{{ art.onNext }}" style="margin-top:12px;display:flex;align-items:center;gap:16px;padding:0;border:0;background:transparent;color:#eef2fa;cursor:pointer;text-align:left" style-hover="color:#ffffff">
+            <span style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(222,231,255,.4);display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:15px">↓</span>
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#7d89a3">Next</span><span style="font-family:'Instrument Serif',serif;font-size:24px">{{ art.nextLabel }}</span></span>
+          </button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS7pre }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both">Step 07 of 07 · Action</div>
+          <h1 style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,6vw,86px);line-height:.95;letter-spacing:-.015em;margin:18px 0 26px;color:#eef2fa;animation:hbIn 1.6s .1s ease both">Bring it to life.</h1>
+          <p style="font-size:17px;line-height:1.6;color:#a2abbf;margin:0;max-width:30em;animation:hbIn 1.4s .3s ease both">Here’s everything you’ve built. One action connects it all.</p>
+          <div style="display:flex;flex-direction:column;margin-top:34px;max-width:540px">
+            <sc-for list="{{ assembled }}" as="a" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:16px;align-items:baseline;padding:12px 0;border-top:1px solid rgba(188,208,255,.08);animation:hbIn 1s ease both;animation-delay:{{ a.delay }}">
+                <span style="display:flex;align-items:center;gap:9px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ a.lc }}"><span style="width:5px;height:5px;border-radius:50%;background:{{ a.dot }};box-shadow:{{ a.glow }}"></span>{{ a.n }}</span>
+                <span style="font-size:14.5px;line-height:1.45;color:{{ a.vc }}">{{ a.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:46px;display:flex;align-items:center;gap:24px;animation:hbIn 1.6s 1.2s ease both">
+            <button onPointerDown="{{ holdStart }}" onPointerUp="{{ holdEnd }}" onPointerLeave="{{ holdEnd }}" onPointerCancel="{{ holdEnd }}" onKeyDown="{{ holdKey }}" onContextMenu="{{ noMenu }}" aria-label="Hold to awaken" style="position:relative;flex:none;width:112px;height:112px;border-radius:50%;border:0;padding:0;cursor:pointer;background:conic-gradient(rgba(236,242,255,.95) {{ chargePct }}, rgba(188,208,255,.16) 0);touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:{{ chargeGlow }}">
+              <span style="position:absolute;inset:2px;border-radius:50%;background:#05070d;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#dfe6f5;pointer-events:none">Hold</span>
+            </button>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'Instrument Serif',serif;font-size:25px;color:#eef2fa">Hold to awaken</span><span style="font-size:14px;line-height:1.5;color:#7d89a3;max-width:20em">Press and hold to connect everything you built.</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isS7post }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#bcd0ff;display:flex;align-items:center;gap:10px;animation:hbIn 1.2s ease both"><span style="width:6px;height:6px;border-radius:50%;background:#eef3ff;box-shadow:0 0 10px 2px rgba(190,210,255,.8)"></span>Neural Key 07 — Action</div>
+          <sc-if value="{{ fin1 }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:28px">
+              <div style="font-family:'Instrument Serif',serif;font-size:clamp(38px,4vw,56px);line-height:1.05;color:#eef2fa;max-width:12em;animation:hbIn 2s ease both">You started with scattered knowledge.</div>
+              <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(38px,4vw,56px);line-height:1.05;color:#bcd0ff;max-width:12em;margin-top:8px;animation:hbIn 2s 1.2s ease both">You now have the beginning of a system that can act.</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ fin2 }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:72px;max-width:560px;animation:hbIn 1.6s ease both">
+              <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3">Your first</div>
+              <div style="font-family:'Instrument Serif',serif;font-size:44px;line-height:1;color:#f3f6fc;margin:10px 0 24px">Work Brain</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 28px">
+                <sc-for list="{{ summary }}" as="r" hint-placeholder-count="6">
+                  <div style="display:flex;flex-direction:column;gap:6px;padding:16px 0;border-top:1px solid rgba(188,208,255,.1);animation:hbIn 1s ease both;animation-delay:{{ r.delay }}">
+                    <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7d89a3">{{ r.k }}</span>
+                    <span style="font-size:16px;line-height:1.4;color:#eef2fa">{{ r.v }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ fin3 }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:1180px;margin-top:120px">
+              <div style="display:flex;align-items:center;gap:16px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both"><span>Your deliverables</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.25),rgba(188,208,255,0))"></span></div>
+
+              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:34px;animation:hbIn 1.4s .1s ease both">
+                <div>
+                  <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#bcd0ff">01 — Blueprint</div>
+                  <div style="font-family:'Instrument Serif',serif;font-size:clamp(38px,4vw,56px);line-height:1;color:#f3f6fc;margin-top:10px">My AI Work Brain Blueprint</div>
+                  <div style="font-size:15px;line-height:1.55;color:#8e98ad;margin-top:10px;max-width:34em">Seven decisions, one page. Everything you chose on the journey.</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <button onClick="{{ copyBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(222,231,255,.5);background:rgba(188,208,255,.08);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">{{ copyBpLabel }}</button>
+                  <button onClick="{{ exportBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:transparent;color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">Export .md</button>
+                  <button onClick="{{ saveBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:transparent;color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">{{ saveLabel }}</button>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px;margin-top:30px;align-items:stretch">
+                <sc-for list="{{ bpSections }}" as="b" hint-placeholder-count="7">
+                  <div style="grid-column:{{ b.span }};display:flex;flex-direction:column;padding:24px 24px 22px;background:rgba(8,12,21,.78);border:1px solid rgba(188,208,255,.12);border-radius:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:{{ b.bc }};animation:hbIn 1.1s ease both;animation-delay:{{ b.delay }}">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                      <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;color:{{ b.nc }}">{{ b.no }}</span>
+                      <span style="width:6px;height:6px;border-radius:50%;background:#eef3ff;box-shadow:0 0 10px 2px rgba(190,210,255,.7)"></span>
+                    </div>
+                    <div style="font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;color:#f3f6fc;margin-top:18px">{{ b.t }}</div>
+                    <div style="font-size:13px;line-height:1.45;color:#6b7590;margin-top:6px">{{ b.d }}</div>
+                    <div style="display:flex;flex-direction:column;margin-top:16px;border-top:1px solid rgba(188,208,255,.08)">
+                      <sc-for list="{{ b.lines }}" as="l" hint-placeholder-count="2">
+                        <div style="font-size:14px;line-height:1.5;color:#c9d0de;padding:9px 0;border-bottom:1px solid rgba(188,208,255,.06);text-wrap:pretty">{{ l.t }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="margin-top:120px;display:flex;align-items:center;gap:16px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3"><span>Seven prompts, earned</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.25),rgba(188,208,255,0))"></span></div>
+              <div style="margin-top:34px">
+                <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#bcd0ff">02 — Toolkit</div>
+                <div style="font-family:'Instrument Serif',serif;font-size:clamp(38px,4vw,56px);line-height:1;color:#f3f6fc;margin-top:10px">Your Neural Toolkit</div>
+                <div style="font-size:15px;line-height:1.55;color:#8e98ad;margin-top:10px;max-width:34em">Each prompt already carries what you chose along the way. Copy it straight into your AI.</div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin-top:30px;align-items:start">
+                <sc-for list="{{ toolkit }}" as="t" hint-placeholder-count="7">
+                  <div style="grid-column:{{ t.span }};display:flex;flex-direction:column;padding:24px;background:rgba(8,12,21,.78);border:1px solid rgba(188,208,255,.12);border-radius:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:hbIn 1.1s ease both;animation-delay:{{ t.delay }}">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                      <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;color:#bcd0ff">{{ t.no }}</span>
+                      <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#5f6a82">Prompt</span>
+                    </div>
+                    <div style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.1;color:#f3f6fc;margin-top:18px">{{ t.name }}</div>
+                    <div style="font-size:14.5px;color:#c9d0de;margin-top:6px">{{ t.purpose }}</div>
+                    <div style="font-size:13px;line-height:1.5;color:#7d89a3;margin-top:6px;min-height:40px">{{ t.expl }}</div>
+                    <div style="display:flex;gap:8px;margin-top:18px">
+                      <button onClick="{{ t.onCopy }}" style="padding:9px 15px;border-radius:999px;border:1px solid rgba(222,231,255,.45);background:rgba(188,208,255,.06);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer" style-hover="background:rgba(188,208,255,.14)">{{ t.copyLabel }}</button>
+                      <button onClick="{{ t.onToggle }}" style="padding:9px 15px;border-radius:999px;border:1px solid rgba(188,208,255,.14);background:transparent;color:#98a2b8;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer" style-hover="color:#e8ecf4">{{ t.toggleLabel }}</button>
+                    </div>
+                    <sc-if value="{{ t.open }}" hint-placeholder-val="{{ false }}">
+                      <pre style="white-space:pre-wrap;word-break:break-word;font-family:'Geist Mono',monospace;font-size:12px;line-height:1.7;color:#c3cadb;background:rgba(4,6,11,.7);border:1px solid rgba(188,208,255,.08);border-radius:8px;padding:16px 18px;max-height:340px;overflow:auto;margin:16px 0 0;animation:hbIn .7s ease both">{{ t.text }}</pre>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="margin-top:140px;padding-top:44px;border-top:1px solid rgba(188,208,255,.1);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px">
+                <div>
+                  <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:34px;line-height:1.2;color:#eef2fa;max-width:14em">From a system of reference to a system of action.</div>
+                  <div style="margin-top:18px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#5f6a82">What do you know that your tools don’t?</div>
+                </div>
+                <button onClick="{{ restart }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.14);background:transparent;color:#7d89a3;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer" style-hover="color:#e8ecf4">Restart the quest</button>
+              </div>
+              <div style="margin-top:40px;padding-top:22px;border-top:1px solid rgba(188,208,255,.08)">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#5f6a82;">
+      <span>© {{ year }} {{ authorName }} · All rights reserved</span>
+      <a href="{{ linkedinHref }}" target="_blank" rel="noopener" style="color:#98a2b8;text-decoration:none" style-hover="color:#ffffff">LinkedIn ↗</a>
+      <a href="{{ mailHref }}" style="color:#98a2b8;text-decoration:none;text-transform:none;letter-spacing:.06em;font-size:11px" style-hover="color:#ffffff">{{ authorEmail }}</a>
+    </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showOutline }}" hint-placeholder-val="{{ false }}">
+    <nav aria-label="Document outline" style="position:absolute;top:96px;left:24px;width:232px;z-index:4;display:flex;flex-direction:column;gap:2px">
+      <div style="font-size:12px;font-weight:500;letter-spacing:.02em;color:#9aa0a6;padding:0 12px 10px">Outline</div>
+      <sc-for list="{{ outline }}" as="o" hint-placeholder-count="7">
+        <button onClick="{{ o.onClick }}" disabled="{{ o.disabled }}" aria-current="{{ o.current }}" style="display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;padding:9px 12px;border:0;border-radius:8px;background:{{ o.bg }};color:{{ o.fc }};font-family:'Geist',system-ui,sans-serif;font-size:14px;font-weight:{{ o.fw }};text-align:left;cursor:{{ o.cursor }};transition:background .25s ease,color .25s ease" style-hover="{{ o.hover }}">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;color:{{ o.nc }}">{{ o.no }}</span>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.n }}</span>
+          <span style="font-size:11px;color:{{ o.sc }}">{{ o.status }}</span>
+        </button>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{ showDrawer }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:50%;right:0;z-index:7;display:flex;align-items:center;transform:translate({{ drawerX }},-50%);transition:transform .8s cubic-bezier(.2,.8,.2,1)">
+      <button onClick="{{ toggleDrawer }}" aria-expanded="{{ drawerOpen }}" aria-label="Brain layers" style="display:flex;flex-direction:column;align-items:center;gap:14px;width:38px;padding:18px 0 16px;border:1px solid rgba(188,208,255,.16);border-right:0;border-radius:10px 0 0 10px;background:rgba(6,9,16,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#c9d3ea;cursor:pointer;transition:background .4s ease,color .4s ease,width .4s ease;animation:hbIn 1.4s ease both" style-hover="background:rgba(16,22,38,.88);color:#ffffff;width:44px">
+        <span style="font-family:'Geist Mono',monospace;font-size:13px;line-height:1">{{ drawerChevron }}</span>
+        <span style="writing-mode:vertical-rl;transform:rotate(180deg);font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase">Layers</span>
+        <span style="display:flex;flex-direction:column;gap:5px">
+          <sc-for list="{{ tabDots }}" as="d" hint-placeholder-count="6">
+            <span style="width:5px;height:5px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.glow }};transition:all .5s ease"></span>
+          </sc-for>
+        </span>
+      </button>
+      <div style="width:300px;max-height:82vh;overflow-y:auto;padding:24px 22px 20px;border:1px solid rgba(188,208,255,.16);border-right:0;border-radius:0 0 0 12px;background:rgba(6,9,16,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);scrollbar-width:none">
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3">Legend</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.1;color:#f3f6fc;margin:8px 0 6px">Layers of your brain</div>
+        <div style="font-size:12.5px;line-height:1.5;color:#7d89a3;margin-bottom:16px">Switch layers on and off. Hover one to isolate it in the network.</div>
+        <div style="display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid rgba(188,208,255,.08)">
+          <span style="width:9px;height:9px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px 2px rgba(190,210,255,.8)"></span>
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:14px;color:#e8ecf4">Core &amp; keys</span><span style="font-size:12px;color:#6b7590">The brain and its seven keys</span></span>
+          <span style="font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#5f6a82">Always</span>
+        </div>
+        <sc-for list="{{ layerRows }}" as="r" hint-placeholder-count="6">
+          <div onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" style="display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 8px;margin:0 -8px;border-top:1px solid rgba(188,208,255,.08);border-radius:4px;background:{{ r.rowBg }};opacity:{{ r.op }};transition:opacity .4s ease,background .4s ease">
+            <span style="width:9px;height:9px;border-radius:50%;background:{{ r.sw }};box-shadow:{{ r.glow }};transition:box-shadow .4s ease"></span>
+            <span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+              <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:14px;color:{{ r.nc }}">{{ r.n }}</span><span style="font-family:'Geist Mono',monospace;font-size:10px;color:#6b7590">{{ r.cnt }}</span></span>
+              <span style="font-size:12px;color:#6b7590">{{ r.d }}</span>
+            </span>
+            <button onClick="{{ r.onToggle }}" role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.n }}" disabled="{{ r.disabled }}" style="position:relative;width:32px;height:18px;padding:0;border-radius:999px;border:1px solid {{ r.tb }};background:{{ r.tbg }};cursor:{{ r.cursor }};transition:all .35s ease">
+              <span style="position:absolute;top:2px;left:{{ r.kx }};width:12px;height:12px;border-radius:50%;background:{{ r.kc }};transition:left .35s ease,background .35s ease"></span>
+            </button>
+          </div>
+        </sc-for>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0 0;margin-top:6px;border-top:1px solid rgba(188,208,255,.14)">
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:14px;color:#e8ecf4">Every name</span><span style="font-size:12px;color:#6b7590">Label all visible nodes</span></span>
+          <button onClick="{{ toggleNames }}" role="switch" aria-checked="{{ namesOn }}" aria-label="Every name" style="position:relative;width:32px;height:18px;padding:0;border-radius:999px;border:1px solid {{ namesTb }};background:{{ namesTbg }};cursor:pointer;transition:all .35s ease">
+            <span style="position:absolute;top:2px;left:{{ namesKx }};width:12px;height:12px;border-radius:50%;background:{{ namesKc }};transition:left .35s ease,background .35s ease"></span>
+          </button>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:18px">
+          <button onClick="{{ showAll }}" style="padding:0;border:0;background:transparent;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#98a2b8;cursor:pointer" style-hover="color:#ffffff">Show all</button>
+          <button onClick="{{ hideAll }}" style="padding:0;border:0;background:transparent;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#98a2b8;cursor:pointer" style-hover="color:#ffffff">Core only</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showMap }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;right:24px;bottom:22px;display:flex;flex-direction:row-reverse;align-items:center;gap:16px;z-index:6;text-align:right;animation:hbIn 1.6s ease both">
+      <div style="display:flex;flex-direction:row-reverse;align-items:center;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button onClick="{{ back }}" disabled="{{ noPrev }}" aria-label="Previous step" title="Previous step" style="width:28px;height:28px;border-radius:50%;border:1px solid {{ prevBc }};background:rgba(6,9,16,.6);color:{{ prevFc }};font-family:'Geist Mono',monospace;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;cursor:{{ prevCur }};transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.55);color:#ffffff">↑</button>
+        <button onClick="{{ fwd }}" disabled="{{ noNext }}" aria-label="Next step" title="Next step" style="width:28px;height:28px;border-radius:50%;border:1px solid {{ nextBc }};background:rgba(6,9,16,.6);color:{{ nextFc }};font-family:'Geist Mono',monospace;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;cursor:{{ nextCur }};transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.55);color:#ffffff">↓</button>
+      </div>
+      <div style="position:relative;width:64px;height:64px">
+        <div style="position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(188,208,255,.1)"></div>
+        <sc-for list="{{ mapDots }}" as="d" hint-placeholder-count="7">
+          <button title="{{ d.title }}" aria-label="{{ d.title }}" onClick="{{ d.onClick }}" style="position:absolute;left:{{ d.x }};top:{{ d.y }};width:20px;height:20px;margin:-10px 0 0 -10px;border:0;padding:0;background:transparent;cursor:{{ d.cursor }};display:flex;align-items:center;justify-content:center"><span style="width:{{ d.size }};height:{{ d.size }};border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.glow }};border:1px solid {{ d.bd }};transition:all .8s ease"></span></button>
+        </sc-for>
+      </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#c9d3ea">{{ mapLabel }}</span>
+        <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ back }}" style="padding:0;border:0;background:transparent;text-align:left;white-space:nowrap;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#5f6a82;cursor:pointer" style-hover="color:#c9d3ea">← {{ backLabel }}</button>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pace&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cinematic&quot;,&quot;brisk&quot;],&quot;default&quot;:&quot;brisk&quot;,&quot;tsType&quot;:&quot;'cinematic' | 'brisk'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;horizon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;chroma&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;authorName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Natalie Label&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;authorEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;labeldn@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;linkedinUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://www.linkedin.com/in/labelnatalie/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;}}">
+const LS = 'hidden-brain-v1';
+const TAU = Math.PI * 2;
+const KA = k => -Math.PI / 2 + k * TAU / 7;
+const rnd = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function qpt(ax, ay, bx, by, cv, t) { const mx = (ax + bx) / 2, my = (ay + by) / 2, dx = bx - ax, dy = by - ay; const cx = mx - dy * cv, cy = my + dx * cv; const u = 1 - t; return [u * u * ax + 2 * u * t * cx + t * t * bx, u * u * ay + 2 * u * t * cy + t * t * by]; }
+const WHITE = [214, 224, 255], RED = [240, 98, 86], CYAN = [140, 196, 255], WARM = [236, 214, 170], BRIDGE = [120, 210, 220];
+const AREA_RGB = [[240, 150, 140], [222, 196, 120], [236, 150, 190], [150, 170, 250], [110, 200, 225], [120, 210, 160]];
+const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+const KEYS = ['Signal', 'Memory', 'Structure', 'Synapse', 'Boundary', 'Network', 'Action'];
+const STAGES = ['What repeats', 'Where knowledge lives', 'Sort it', 'Turn it into action', 'Your limits', 'The flow', 'Bring it to life'];
+const SIGNALS = [
+  { t: 'People keep asking the same questions', s: 'SAME QUESTIONS' },
+  { t: 'I review the same type of work repeatedly', s: 'REPEAT REVIEWS' },
+  { t: 'I make the same decisions again and again', s: 'REPEAT DECISIONS' },
+  { t: 'I copy information between tools', s: 'COPY BETWEEN TOOLS' },
+  { t: 'Important context lives in people’s heads', s: 'CONTEXT IN HEADS' },
+  { t: 'We have guidelines, but people rarely use them', s: 'UNUSED GUIDELINES' },
+  { t: 'AI gives us generic results', s: 'GENERIC AI' },
+  { t: 'Context disappears during handoffs', s: 'LOST HANDOFFS' },
+  { t: 'We repeat the same setup for every project', s: 'REPEAT SETUP' }];
+const SOURCES = ['People', 'Figma', 'Docs', 'Slack / Teams', 'Code', 'PRDs', 'Tickets', 'Research', 'Design System', 'Templates', 'Previous projects', 'Meeting notes', 'Internal tools', 'Other'];
+const AREAS = [{ n: 'Principles', d: 'What we believe.' }, { n: 'Knowledge', d: 'What we know.' }, { n: 'Patterns', d: 'How we usually solve things.' }, { n: 'Rules', d: 'What must be respected.' }, { n: 'Processes', d: 'How work moves.' }, { n: 'Validation', d: 'How we know it’s good enough.' }];
+const FRAGS = [
+  { t: 'Clarity beats density on every screen.', f: 'Design System' },
+  { t: 'Most of our users arrive on mobile, mid-task.', f: 'Research' },
+  { t: 'Empty states always explain the next action.', f: 'Figma' },
+  { t: 'Body text must meet WCAG AA contrast.', f: 'Docs' },
+  { t: 'Every design is reviewed before engineering handoff.', f: 'Meeting notes' },
+  { t: 'A flow is ready when support can explain it in one sentence.', f: 'People' },
+  { t: 'We chose tabs over a sidebar in 2024 — and why.', f: 'PRDs' },
+  { t: 'Destructive actions always ask for confirmation.', f: 'Code' }];
+const ACTIONS = ['Answer recurring questions', 'Review work', 'Generate something', 'Validate against rules', 'Prepare a handoff', 'Transform information', 'Recommend a decision', 'Route work', 'Find inconsistencies', 'Something else'];
+const WF = [
+  { k: 'name', n: 'Workflow', q: 'Which workflow are you designing?', o: ['Reviewing designs before engineering handoff', 'Answering recurring product questions', 'Onboarding a new team member', 'Preparing a feature handoff'] },
+  { k: 'trigger', n: 'Trigger', q: 'What starts the workflow?', o: ['A design is marked ready for review', 'A question is posted in the team channel', 'A new ticket is created', 'A pull request is opened'] },
+  { k: 'context', n: 'Context', q: 'What does AI need to understand about this task?', o: ['The brief and who it’s for', 'The component or screen being changed', 'Who is asking, and why'] },
+  { k: 'knowledge', n: 'Knowledge', q: 'Which part of the Brain should it consult?', o: ['Rules + Validation', 'Patterns + Examples', 'Principles + Domain knowledge'] },
+  { k: 'action', n: 'Action', q: 'What should it actually do?', o: ['Review against our rules and flag issues', 'Draft an answer and cite its sources', 'Produce a first version to refine'] },
+  { k: 'validation', n: 'Validate', q: 'What should be checked?', o: ['Every issue links to a rule', 'Every claim cites a source', 'A person approves before it’s shared'] },
+  { k: 'output', n: 'Output', q: 'What should exist at the end?', o: ['A prioritised review note', 'A drafted reply', 'A structured handoff document'] },
+  { k: 'next', n: 'Next', q: 'Who or what receives the result?', o: ['The designer who asked', 'The engineering ticket', 'The team channel'] }];
+const CONNS = [
+  { t: 'AI reads our design system documentation', s: 'DS DOCS', b: 2 },
+  { t: 'Customer data is sent to an external model', s: 'CUSTOMER DATA', b: 3 },
+  { t: 'AI drafts review comments inside design files', s: 'DESIGN FILES', b: 4 },
+  { t: 'Changes are published to the shared library', s: 'SHARED LIBRARY', b: 6 },
+  { t: 'An external AI connects directly to our repository', s: 'REPOSITORY', b: 1 },
+  { t: 'A summary is posted to the team channel', s: 'TEAM CHANNEL', b: 0 }];
+const BRIDGES = ['API', 'Structured export / import', 'Repository', 'Approved internal AI', 'Plugin', 'Local file', 'Human checkpoint', 'Controlled handoff'];
+const CLASSES = [{ k: 'auto', n: 'Auto', d: 'Can happen automatically.', c: 'rgb(232,239,255)' }, { k: 'controlled', n: 'Controlled', d: 'Through an approved mechanism.', c: 'rgb(140,196,255)' }, { k: 'human', n: 'Human', d: 'Requires a person’s action or approval.', c: 'rgb(236,214,170)' }, { k: 'blocked', n: 'Blocked', d: 'Cannot connect directly.', c: 'rgb(240,98,86)' }];
+const CV = { auto: { style: 'solid', col: WHITE, s: 0.5, rate: 0.35 }, controlled: { style: 'dash', col: CYAN, s: 0.5, rate: 0.2 }, human: { style: 'gate', col: WARM, s: 0.5, rate: 0.15 }, blocked: { style: 'broken', col: RED, s: 0.45, rate: 0 } };
+const MOVES = ['Design decisions', 'Review feedback', 'Component specs', 'Research insights', 'Requirements', 'Code changes'];
+const TOOLS = ['Figma', 'AI / LLM', 'IDE', 'Repository', 'Documentation', 'Product tools', 'Code', 'Internal tools', 'Human', 'Other'];
+const NET = [{ k: 'source', n: 'Source', d: 'Where knowledge originates.' }, { k: 'brain', n: 'Brain', d: 'Where structured knowledge lives.', fixed: 'Core Brain' }, { k: 'reasoning', n: 'Reasoning', d: 'Where AI interprets or decides.' }, { k: 'action', n: 'Action', d: 'Where work happens.' }, { k: 'validation', n: 'Validation', d: 'Where output is checked.' }, { k: 'destination', n: 'Destination', d: 'Where the result continues.' }];
+const NET_KEYS = ['source', 'reasoning', 'action', 'validation', 'destination'];
+const LAYER_OF = id => id.startsWith('sig') ? 1 : id.startsWith('src') ? 2 : (id.startsWith('area') || id.startsWith('frag')) ? 3 : (id === 'know' || id === 'do' || id.startsWith('wf')) ? 4 : (id === 'ext' || id.startsWith('conn') || id.startsWith('br')) ? 5 : id.startsWith('tool') ? 6 : 0;
+const LAYERS = [{ L: 1, n: 'Signals', d: 'Repetition you noticed' }, { L: 2, n: 'Memory', d: 'Where knowledge lives' }, { L: 3, n: 'Structure', d: 'Six areas, sorted fragments' }, { L: 4, n: 'Synapse', d: 'Know → Do workflow' }, { L: 5, n: 'Boundaries', d: 'Rules for each connection' }, { L: 6, n: 'Network', d: 'Tools knowledge flows through' }];
+const INIT = { part2: false, focus: null, paused: false, wfName: '', muted: false, reading: false, hidden: [], names: false, stage: 0, reached: 0, intro: 0, keys: [0, 0, 0, 0, 0, 0, 0], signals: [], custom: '', customOn: false, sources: [], sorted: {}, action: [], wf: {}, wfOpen: null, bounds: {}, bIntro: 0, move: null, net: {}, netOpen: null, awake: false, fin: 0, brainOpen: false };
+const TRANSIENT = { arriving: false, wfDraft: {}, drawer: false, solo: null, lastSort: null, transit: false, transitTo: null, copied: null, charge: 0, openCard: null, saved: false };
+
+const P1 = `I want to identify opportunities for AI-assisted workflows in my team.
+
+I’ll describe what my team does, recurring questions we receive, repeated decisions, handoffs between tools, and tasks that require the same context again and again.
+
+Help me identify:
+- repeated knowledge
+- repeated decisions
+- repeated manual actions
+- context that gets lost between tools
+- tasks that could become AI-assisted workflows
+
+Prioritize opportunities where AI can reduce repetitive work without replacing important human judgment.`;
+const P2 = `I’m building a shared AI knowledge layer for my team.
+
+I’ll give you existing documents, guidelines, decisions, examples and working practices.
+
+Do not simply summarize them.
+
+Help me extract the knowledge that could guide future work.
+
+Separate what you find into:
+- Principles — what should remain true
+- Rules — what must or must not happen
+- Patterns — repeatable ways we solve problems
+- Decisions — choices we’ve already made
+- Processes — how work moves
+- Examples — useful reference cases
+- Open questions — things that are still ambiguous
+
+Identify contradictions and duplicated guidance instead of silently resolving them.`;
+const P5 = `I’ll describe the tools, security restrictions, privacy requirements and access limitations in my environment.
+
+Help me design an AI-assisted workflow that works within these constraints.
+
+Do not assume every tool can connect directly.
+
+For every handoff, consider:
+- direct integration
+- API
+- structured export/import
+- local file or repository
+- plugin
+- approved internal AI
+- human-mediated handoff
+
+Prioritize security, traceability and replaceable tools over convenience.`;
+const STRUCT = `/my-core-brain
+
+00_START_HERE.md
+01_PRINCIPLES.md
+02_DOMAIN_KNOWLEDGE.md
+03_PATTERNS.md
+04_RULES.md
+05_PROCESSES.md
+06_VALIDATION.md
+07_EXAMPLES.md`;
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { }
+    this.state = Object.assign(JSON.parse(JSON.stringify(INIT)), saved || {}, TRANSIENT, { narrow: typeof window !== 'undefined' && window.innerWidth < 860 });
+    if (this.state.stage === 0) this.state.intro = 0;
+    if (this.state.wfName && !(this.state.wf || {}).name) this.state.wf = Object.assign({}, this.state.wf, { name: this.state.wfName });
+    if (!Array.isArray(this.state.action)) this.state.action = typeof this.state.action === 'number' ? [this.state.action] : [];
+    if (this.state.awake) this.state.fin = 3;
+    this.canvasRef = React.createRef();
+    this.panelRef = React.createRef();
+    this.timers = [];
+    this.reduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  pace() { if (this.state.reading) return 0.04; return this.props.pace === 'brisk' ? 0.5 : 1; }
+  initAudio() {
+    if (this.ac) { if (this.ac.state === 'suspended') this.ac.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const ac = this.ac = new AC(); const m = this.master = ac.createGain(); m.gain.value = 0; m.connect(ac.destination);
+    const nb = this.noiseBuf = ac.createBuffer(1, ac.sampleRate * 0.4, ac.sampleRate); const nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    this.setMaster();
+  }
+  setMaster() { if (!this.master) return; const on = !this.state.muted; this.master.gain.setTargetAtTime(on ? 0.85 : 0, this.ac.currentTime, 0.35); if (this.droneGain) { const kn = this.state.keys.reduce((a, b) => a + b, 0); this.droneGain.gain.setTargetAtTime(0.05 + kn * 0.006 + (this.state.awake ? 0.02 : 0), this.ac.currentTime, 2.5); } }
+  tone(f, t0, dur, vol, type, f2) {
+    const ac = this.ac; const o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'sine'; const t = ac.currentTime + t0;
+    o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dur + 0.05);
+  }
+  sfx(k) {
+    if (!this.ac || this.state.muted) return; const P = [523.3, 587.3, 659.3, 784, 880, 1046.5];
+    if (k === 'select') { const f = P[Math.floor(Math.random() * P.length)]; this.tone(f, 0, 0.5, 0.05); this.tone(f * 2, 0.02, 0.35, 0.015); }
+    else if (k === 'spark' || k === 'zap') {
+      const n = performance.now(); if (k === 'spark' && n - (this.lastSpark || 0) < 220) return; this.lastSpark = n;
+      const ac = this.ac, big = k === 'zap', cnt = big ? 7 : 3;
+      for (let c = 0; c < cnt; c++) {
+        const s = ac.createBufferSource(); s.buffer = this.noiseBuf; const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2600; bp.Q.value = 6;
+        const g = ac.createGain(); const t = ac.currentTime + c * (0.018 + Math.random() * 0.03), d = 0.015 + Math.random() * 0.03;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(big ? 0.05 : 0.022, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        s.connect(bp); bp.connect(g); g.connect(this.master); s.start(t, Math.random() * 0.3, d + 0.02);
+      }
+      if (big) this.tone(92, 0, 0.35, 0.03, 'sine', 70);
+    }
+    else if (k === 'move') { this.tone(180, 0, 0.9, 0.035, 'sine', 90); this.tone(360, 0.05, 0.7, 0.012, 'triangle', 240); }
+    else if (k === 'unlock') { [523.3, 659.3, 784, 1046.5].forEach((f, i) => { this.tone(f, i * 0.11, 1.4, 0.05); this.tone(f * 1.5, i * 0.11 + 0.02, 0.9, 0.01); }); }
+    else if (k === 'deny') { [0, 0.22].forEach(t => this.tone(98, t, 0.18, 0.07, 'sawtooth', 92)); this.tone(46, 0, 0.8, 0.06, 'sine'); }
+    else if (k === 'awaken') { [130.8, 196, 261.6, 329.6, 392, 523.3].forEach((f, i) => this.tone(f, i * 0.08, 3.2, 0.045)); this.tone(65.4, 0, 3.6, 0.07); }
+  }
+  toggleMute() { this.initAudio(); this.setState({ muted: !this.state.muted }, () => this.setMaster()); }
+  toggleReading() {
+    const r = !this.state.reading, st = this.state;
+    let av = {};
+    if (r) { this.prevAV = { muted: st.muted, paused: st.paused }; av = { muted: true, paused: true }; }
+    else av = this.prevAV || { muted: st.muted, paused: false };
+    this.setState(Object.assign(av, { reading: r, intro: r ? 4 : st.intro, bIntro: r && st.stage === 5 ? 2 : st.bIntro, fin: st.awake ? 3 : st.fin }), () => { this.setMaster(); if (!r) requestAnimationFrame(() => this.onResize && this.onResize()); });
+  }
+  later(fn, ms) { const t = setTimeout(fn, ms); this.timers.push(t); return t; }
+
+  componentDidMount() {
+    this.initWorld();
+    const c = this.canvasRef.current; this.ctx = c ? c.getContext('2d') : null;
+    this.onResize = () => {
+      if (!c) return; const dpr = Math.min(2, window.devicePixelRatio || 1); this.dpr = dpr;
+      this.cw = c.clientWidth; this.ch = c.clientHeight; c.width = this.cw * dpr; c.height = this.ch * dpr;
+      const narrow = window.innerWidth < 860; if (narrow !== this.state.narrow) this.setState({ narrow });
+    };
+    this.onFirst = () => { this.initAudio(); window.removeEventListener('pointerdown', this.onFirst); window.removeEventListener('keydown', this.onFirst); };
+    if (this.state.stage > 0) { window.addEventListener('pointerdown', this.onFirst); window.addEventListener('keydown', this.onFirst); }
+    this.onMove = e => { this.W.mx = e.clientX; this.W.my = e.clientY; };
+    this.onOut = () => { this.W.mx = -9999; this.W.my = -9999; };
+    window.addEventListener('resize', this.onResize); window.addEventListener('pointermove', this.onMove); document.addEventListener('pointerleave', this.onOut);
+    this.onResize(); this.syncWorld();
+    const W = this.W; W.rot = W.trot; W.zoom = W.tzoom; W.ax = W.tax; W.ay = W.tay; W.arc = W.tarc;
+    this.loop = ts => { this.raf = requestAnimationFrame(this.loop); this.frame(ts); };
+    this.raf = requestAnimationFrame(this.loop);
+    if (this.state.stage === 0) this.runIntro();
+    if (this.state.stage === 5 && this.state.bIntro < 2) this.runDenied();
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf); this.timers.forEach(clearTimeout); cancelAnimationFrame(this.chargeRaf); window.removeEventListener('pointerdown', this.onFirst); window.removeEventListener('keydown', this.onFirst); if (this.ac) try { this.ac.close(); } catch (e) { }
+    window.removeEventListener('resize', this.onResize); window.removeEventListener('pointermove', this.onMove); document.removeEventListener('pointerleave', this.onOut);
+  }
+  componentDidUpdate() {
+    this.syncWorld();
+    const st = this.state, s = st.stage;
+    if (s >= 2 && s <= 6 && !st.transit && this._ready && this._ready[s] && !st.keys[s - 1] && (s !== 5 || st.bIntro >= 2) && this.autoKey !== s) {
+      this.autoKey = s; this.later(() => { if (this.state.stage === s && !this.state.keys[s - 1]) this.unlock(s - 1, true); this.autoKey = null; }, 700);
+    }
+    const out = {}; for (const k in INIT) out[k] = this.state[k];
+    try { localStorage.setItem(LS, JSON.stringify(out)); } catch (e) { }
+  }
+
+  runIntro() {
+    const p = this.pace();
+    [[1, 1400], [2, 3800], [3, 6600], [4, 8400]].forEach(([v, t]) => this.later(() => this.setState({ intro: v }), t * p));
+  }
+  runDenied() {
+    const p = this.pace();
+    this.setState({ bIntro: 0 });
+    this.later(() => { this.setState({ bIntro: 1 }); this.W.flash = 1; this.sfx('deny'); }, 2600 * p);
+    this.later(() => this.setState({ bIntro: 2 }), 5000 * p);
+  }
+
+  // ---------- world ----------
+  initWorld() {
+    const W = this.W = { nodes: {}, edges: {}, pulses: [], sparks: [], waves: [], dust: [], rot: 0, trot: 0, zoom: 1.25, tzoom: 1.25, ax: 0.5, tax: 0.5, ay: 0.52, tay: 0.52, glow: 0, tglow: 0, arc: 0, tarc: 0, mx: -9999, my: -9999, pmx: 0, pmy: 0, t: 0, flash: 0, hl: null, lastHv: null };
+    const n = this.reduced ? 90 : 240;
+    for (let i = 0; i < n; i++) W.dust.push({ x: Math.random(), y: Math.random(), z: 0.15 + Math.random() * 0.85, v: (Math.random() - 0.5) * 0.6, tw: Math.random() * TAU });
+  }
+  N(id, x, y, o) {
+    const W = this.W; let n = W.nodes[id];
+    if (!n) { n = W.nodes[id] = { id, x: o.fx ?? x, y: o.fy ?? y, a: 0, r: 0.5, col: (o.col || WHITE).slice(), L: LAYER_OF(id), vis: 1, ph: Math.random() * TAU, sx: 0, sy: 0, prox: 0 }; }
+    n.tx = x; n.ty = y; n.ta = o.a ?? 1; n.tr = o.r ?? 2; n.tcol = o.col || WHITE; n.nm = o.nm || null; n.lab = !!o.lab; n.jit = o.jit || 0; n.core = !!o.core; n.live = true;
+    if (o.orR) { if (!n.orR) n.oa = Math.atan2(n.y, n.x); n.orR = o.orR; n.orS = o.orS; } else n.orR = 0;
+  }
+  E(id, a, b, o) {
+    const W = this.W; let e = W.edges[id];
+    if (!e) e = W.edges[id] = { id, g: 0, s: 0, col: (o.col || WHITE).slice() };
+    Object.assign(e, { a, b, tg: o.g ?? 1, ts: o.s ?? 0.3, tcol: o.col || WHITE, style: o.style || 'solid', curve: o.curve ?? 0.12, rate: o.rate || 0, gs: o.gs || 0.9, live: true });
+  }
+  sigSel() { const s = this.state.signals.slice(); if (this.state.custom.trim()) s.push(9); return s; }
+  fragCursor() { for (let i = 0; i < FRAGS.length; i++) if (this.state.sorted[i] === undefined) return i; return -1; }
+  netTools() { const n = this.state.net; return NET_KEYS.map(k => n[k]).filter(v => v !== undefined && v !== null); }
+
+  syncWorld() {
+    const W = this.W; if (!W) return; const st = this.state;
+    for (const id in W.nodes) W.nodes[id].live = false;
+    for (const id in W.edges) W.edges[id].live = false;
+    const cam = st.transitTo ?? st.stage, R = st.reached, kn = st.keys.reduce((a, b) => a + b, 0), cur = st.stage, aw = st.awake;
+    const chroma = this.props.chroma ?? true;
+    const P = (k, a, b) => { const an = KA(k), ux = Math.cos(an), uy = Math.sin(an); return [ux * a - uy * b, uy * a + ux * b]; };
+
+    this.N('core', 0, 0, { r: cam === 0 ? 2.2 : 3 + kn * 0.55 + (aw ? 2.5 : 0), a: cam === 0 && st.intro < 1 ? 0.35 : 1, core: 1, nm: aw ? 'WORK BRAIN' : (kn >= 3 ? 'CORE BRAIN' : null), lab: aw });
+    if (R >= 1) for (let k = 0; k < 7; k++) {
+      const [x, y] = P(k, 0.62, 0); const on = st.keys[k];
+      this.N('key' + k, x, y, { r: on ? 3 : 1.6, a: on ? 1 : (cur - 1 === k ? 0.8 : 0.3), nm: '0' + (k + 1) + ' ' + KEYS[k].toUpperCase(), lab: on || cur - 1 === k });
+      if (on) this.E('ck' + k, 'core', 'key' + k, { s: 0.5, curve: 0.04 });
+      if (aw) this.E('kr' + k, 'key' + k, 'key' + ((k + 1) % 7), { s: 0.35, curve: -0.16, rate: 0.4 });
+    }
+    if (R >= 1) {
+      const sel = this.sigSel();
+      for (let i = 0; i < 10; i++) {
+        const on = sel.includes(i); if (i === 9 && !on && cur !== 1) continue;
+        const [x, y] = P(0, 0.76 + rnd(i) * 0.34, -0.54 + i * 0.12 + (rnd(i + 9) - 0.5) * 0.05);
+        this.N('sig' + i, x, y, { r: on ? 2.4 : 1.1, a: on ? 0.95 : (cur === 1 ? 0.3 : 0), jit: 0.012, nm: i < 9 ? SIGNALS[i].s : 'MY SIGNAL', lab: on && cur === 1 });
+        if (on) this.E('sc' + i, 'sig' + i, 'core', { s: st.keys[0] ? 0.32 : 0.18, style: st.keys[0] ? 'solid' : 'dash', curve: (rnd(i + 3) - 0.5) * 0.5 });
+      }
+    }
+    if (R >= 2) SOURCES.forEach((nm, i) => {
+      const on = st.sources.includes(i);
+      if (on) { this.N('src' + i, 0, 0, { orR: 0.15 + (i % 5) * 0.045 + rnd(i + 20) * 0.02, orS: 0.05 + rnd(i + 30) * 0.06, r: 2, a: 0.9, nm: nm.toUpperCase(), lab: false }); this.E('sr' + i, 'src' + i, 'core', { s: 0.3, curve: 0.25 }); }
+      else { const [x, y] = P(1, 0.78 + rnd(i + 50) * 0.32, -0.6 + i * 0.092); this.N('src' + i, x, y, { r: 1.2, a: cur === 2 ? 0.35 : 0, jit: 0.015, nm: nm.toUpperCase() }); }
+    });
+    if (R >= 3) {
+      const cnt = [0, 0, 0, 0, 0, 0]; Object.values(st.sorted).forEach(j => cnt[j]++);
+      const fc = this.fragCursor();
+      AREAS.forEach((a, j) => {
+        const an = KA(2) + j * Math.PI / 3 + Math.PI / 6; const col = chroma ? AREA_RGB[j] : WHITE;
+        this.N('area' + j, Math.cos(an) * 0.42, Math.sin(an) * 0.42, { r: cnt[j] ? 2.4 : 1.4, a: cnt[j] ? 0.95 : (cur === 3 ? 0.5 : 0.12), col, nm: a.n.toUpperCase(), lab: cur === 3 || aw });
+        this.E('ac' + j, 'core', 'area' + j, { s: cnt[j] ? 0.42 : (cur === 3 ? 0.08 : 0), col, curve: 0.1 });
+      });
+      FRAGS.forEach((f, i) => {
+        const j = st.sorted[i];
+        if (j !== undefined) {
+          const an = KA(2) + j * Math.PI / 3 + Math.PI / 6 + (rnd(i + 60) - 0.5) * 0.55; const rr = 0.5 + rnd(i + 70) * 0.1; const col = chroma ? AREA_RGB[j] : WHITE;
+          this.N('frag' + i, Math.cos(an) * rr, Math.sin(an) * rr, { r: 1.8, a: 0.9, col, jit: 0.006 });
+          this.E('fa' + i, 'frag' + i, 'area' + j, { s: 0.45, col, curve: 0.2 });
+        } else {
+          const [x, y] = P(2, 0.82 + rnd(i + 80) * 0.24, -0.45 + i * 0.13); const isC = i === fc;
+          this.N('frag' + i, x, y, { r: isC ? 2.8 : 1.3, a: cur === 3 ? (isC ? 1 : 0.4) : 0, jit: 0.05, nm: isC ? 'UNSORTED' : null, lab: isC });
+        }
+      });
+    }
+    if (R >= 4) {
+      const [kx, ky] = P(3, 0.86, -0.42), [dx, dy] = P(3, 0.86, 0.42);
+      this.N('know', kx, ky, { r: 3, a: cur === 4 || aw ? 1 : 0.6, nm: 'KNOW', lab: true });
+      this.N('do', dx, dy, { r: 3, a: cur === 4 || aw ? 1 : 0.6, nm: 'DO', lab: true });
+      this.E('kc', 'core', 'know', { s: 0.25, curve: 0.1 });
+      if (st.action.length > 0) {
+        this.E('syn', 'know', 'do', { s: 0.7, curve: -0.3, col: [235, 240, 255], rate: 0.4, gs: 0.5 });
+        this.E('dc', 'do', 'core', { s: 0.2, curve: 0.1 });
+        WF.forEach((w, j) => { const [x, y] = qpt(kx, ky, dx, dy, -0.3, (j + 1) / (WF.length + 1)); const f = !!st.wf[w.k]; this.N('wf' + j, x, y, { r: f ? 2.1 : 1, a: f ? 0.95 : 0.3, nm: w.n.toUpperCase(), lab: f && cur === 4 }); });
+      }
+    }
+    if (R >= 5) {
+      const d = st.bIntro >= 1; const [ex, ey] = P(4, 1.04, 0.66);
+      this.N('ext', ex, ey, { r: 2, a: cur === 5 ? 0.9 : 0.35, nm: 'EXTERNAL MODEL', lab: cur === 5, col: d ? RED : WHITE });
+      this.E('xe', 'core', 'ext', { s: d ? 0.55 : 0.45, style: d ? 'broken' : 'solid', col: d ? RED : WHITE, gs: 0.42, curve: 0.08 });
+      const all = CONNS.every((c, i) => st.bounds[i]);
+      if (st.bIntro >= 2 || Object.keys(st.bounds).length) CONNS.forEach((c, i) => {
+        const [x, y] = P(4, 0.74 + (i % 2) * 0.14, -0.52 + i * 0.17); const cl = st.bounds[i]; const V = CV[cl] || {};
+        this.N('conn' + i, x, y, { r: cl ? 2.2 : 1.3, a: cur === 5 ? (cl ? 1 : 0.5) : (cl ? 0.8 : 0), col: V.col || WHITE, nm: c.s, lab: cur === 5 });
+        if (cur === 5 || cl) this.E('cn' + i, 'core', 'conn' + i, { s: cl ? V.s : 0.08, style: cl ? V.style : 'dash', col: V.col || WHITE, rate: V.rate || 0, curve: (rnd(i + 90) - 0.5) * 0.3 });
+        if (cl === 'blocked' && all) {
+          const [bx, by] = P(4, 0.48 + (i % 2) * 0.1, -0.4 + i * 0.17);
+          this.N('br' + i, bx, by, { r: 1.7, a: 0.9, col: BRIDGE, nm: BRIDGES[c.b].toUpperCase(), lab: cur === 5 });
+          this.E('cb' + i, 'core', 'br' + i, { s: 0.42, col: BRIDGE, rate: 0.25, curve: 0.2 });
+          this.E('bc' + i, 'br' + i, 'conn' + i, { s: 0.42, col: BRIDGE, rate: 0.25, curve: 0.2 });
+        }
+      });
+    }
+    if (R >= 6) {
+      const used = this.netTools();
+      TOOLS.forEach((t, i) => { const [x, y] = P(5, 0.9 + (i % 2) * 0.14, -0.64 + i * 0.14); const u = used.includes(i); this.N('tool' + i, x, y, { r: u ? 2.6 : 1.3, a: u ? 1 : (cur === 6 ? 0.45 : 0), nm: t.toUpperCase(), lab: cur === 6 || (aw && u) }); });
+      const seq = this.netSeq();
+      for (let j = 0; j < seq.length - 1; j++) if (seq[j] && seq[j + 1] && seq[j] !== seq[j + 1]) this.E('np' + j, seq[j], seq[j + 1], { s: 0.55, rate: 0.5, curve: 0.22 * (j % 2 ? 1 : -1), col: [205, 222, 255] });
+    }
+
+    if (!aw) W.trot = cam === 0 ? 0 : -(Math.min(cam, 7) - 1) * TAU / 7;
+    const res = aw && st.fin >= 3 && cam === 7; W.res = res;
+    W.tzoom = res ? (st.narrow ? 0.42 : 0.36) : (aw && cam === 7) ? 0.74 : cam === 0 ? 1.25 : cam === 7 ? 0.88 : 1;
+    W.tax = res ? (st.narrow ? 0.5 : 0.86) : st.narrow ? 0.5 : (cam === 0 ? 0.5 : 0.69); W.tay = res ? (st.narrow ? 0.15 : 0.24) : st.narrow && cam > 0 ? 0.24 : 0.52;
+    W.tglow = 0.06 + kn * 0.09 + (aw ? 0.3 : 0) + st.charge * 0.35;
+    W.tarc = kn === 7 ? TAU : kn ? (kn - 1) * TAU / 7 + 0.2 : 0;
+    W.awake = aw; W.narrow = st.narrow; W.charge = st.charge; W.hidden = st.hidden; W.solo = st.solo; W.names = st.names;
+    for (const id in W.nodes) { const n = W.nodes[id]; if (!n.live) { n.ta = 0; n.lab = false; } }
+    for (const id in W.edges) { const e = W.edges[id]; if (!e.live) { e.ts = 0; e.tg = 0; } }
+  }
+  netSeq() { const n = this.state.net; const t = k => (n[k] !== undefined && n[k] !== null) ? 'tool' + n[k] : null; return [t('source'), 'core', t('reasoning'), t('action'), t('validation'), t('destination')]; }
+
+  proj(x, y) { const v = this.view; return [v.cx + (x * v.c - y * v.s) * v.S, v.cy + (x * v.s + y * v.c) * v.S]; }
+  unproj(sx, sy) { const v = this.view; const xr = (sx - v.cx) / v.S, yr = (sy - v.cy) / v.S; return [xr * v.c + yr * v.s, -xr * v.s + yr * v.c]; }
+  hl(id) { if (this.W) this.W.hl = id; }
+  pulseEdge(id, delay, rev) { this.W.pulses.push({ e: id, t: -(delay || 0), sp: 0.75, rev: !!rev }); }
+  fireFrom(el, to, then, thenRev) {
+    if (!el || !this.view) return; const r = el.getBoundingClientRect();
+    const [fx, fy] = this.unproj(r.right, r.top + r.height / 2);
+    this.W.pulses.push({ free: true, fx, fy, to, t: 0, sp: 1.05, then, thenRev });
+  }
+  sparkFrom(id) {
+    const W = this.W, A = W.nodes[id]; if (!A) return;
+    const c = []; for (const k in W.nodes) { const n = W.nodes[k]; if (n === A || n.a * (n.vis ?? 1) < 0.2) continue; const d = Math.hypot(n.sx - A.sx, n.sy - A.sy); if (d < 230) c.push([d, k]); }
+    c.sort((a, b) => a[0] - b[0]); c.slice(0, 2).forEach(([, k]) => W.sparks.push({ a: id, b: k, life: 1 }));
+    for (const k in W.edges) { const e = W.edges[k]; if ((e.a === id || e.b === id) && e.s > 0.1) { W.pulses.push({ e: k, t: 0, sp: 1, rev: e.b === id }); break; } }
+  }
+
+  frame(ts) {
+    const W = this.W, ctx = this.ctx; if (!ctx || !this.cw || this.state.reading) return;
+    const dt = this.state.paused ? 0 : Math.min(0.05, W.last ? (ts - W.last) / 1000 : 0.016); W.last = ts; W.t += dt;
+    const w = this.cw, h = this.ch, R = this.reduced, dpr = this.dpr;
+    const k = 1 - Math.exp(-dt * (R ? 6 : 1.5));
+    if (W.awake && !R) W.trot -= dt * 0.022;
+    W.rot += (W.trot - W.rot) * k * 0.9; W.zoom += (W.tzoom - W.zoom) * k * 0.8; W.ax += (W.tax - W.ax) * k; W.ay += (W.tay - W.ay) * k;
+    W.glow += (W.tglow - W.glow) * k * 0.7; W.arc += (W.tarc - W.arc) * k * 0.45;
+    const hasM = W.mx > -999;
+    W.pmx += ((hasM ? W.mx / w - 0.5 : 0) - W.pmx) * k * 0.6; W.pmy += ((hasM ? W.my / h - 0.5 : 0) - W.pmy) * k * 0.6;
+    const S = Math.min(w, h) * (W.narrow ? 0.36 : 0.42) * W.zoom;
+    const cx = w * W.ax - (R ? 0 : W.pmx * 22), cy = h * W.ay - (R ? 0 : W.pmy * 14);
+    this.view = { S, cx, cy, c: Math.cos(W.rot), s: Math.sin(W.rot) };
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#04060b'; ctx.fillRect(0, 0, w, h);
+    let g = ctx.createRadialGradient(cx, cy, 0, cx, cy, S * 1.9);
+    g.addColorStop(0, `rgba(58,78,140,${0.08 + W.glow * 0.2})`); g.addColorStop(0.5, `rgba(20,30,60,${0.05 + W.glow * 0.08})`); g.addColorStop(1, 'rgba(4,6,11,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+
+    ctx.globalCompositeOperation = 'lighter';
+    // horizon rim (reference: luminous arcs)
+    if (this.props.horizon ?? true) {
+      const hx = w * 1.05 - W.pmx * 30, hy = h * 1.6 - W.pmy * 20, hr = h * 1.15;
+      const ha = 0.05 + W.glow * 0.5;
+      ctx.save(); ctx.shadowColor = 'rgba(140,170,255,0.9)'; ctx.shadowBlur = 40;
+      ctx.strokeStyle = `rgba(200,215,255,${ha * 0.5})`; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(hx, hy, hr, Math.PI, 1.75 * Math.PI); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = `rgba(150,175,255,${ha * 0.12})`; ctx.lineWidth = 26; ctx.beginPath(); ctx.arc(hx, hy, hr + 8, Math.PI, 1.75 * Math.PI); ctx.stroke();
+    }
+    // dust
+    for (const d of W.dust) {
+      const x = (((d.x * w + W.t * d.v * 9 * d.z - W.pmx * 60 * d.z) % w) + w) % w;
+      const y = (((d.y * h + W.t * 2.2 * d.z - W.pmy * 40 * d.z) % h) + h) % h;
+      const a = (0.05 + 0.2 * d.z) * (0.6 + 0.4 * Math.sin(W.t * 0.8 + d.tw)) * (0.45 + W.glow * 0.8);
+      ctx.fillStyle = `rgba(190,205,240,${a})`; ctx.fillRect(x, y, d.z * 1.3, d.z * 1.3);
+    }
+    // key ring
+    ctx.strokeStyle = 'rgba(170,190,240,0.05)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, 0.62 * S, 0, TAU); ctx.stroke();
+    if (W.arc > 0.002) {
+      const a0 = KA(0) + W.rot - 0.1, a1 = a0 + W.arc;
+      ctx.save(); ctx.shadowColor = 'rgba(150,180,255,1)'; ctx.shadowBlur = 20;
+      ctx.strokeStyle = 'rgba(228,236,255,0.85)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(cx, cy, 0.62 * S, a0, a1); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = 'rgba(150,175,255,0.07)'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(cx, cy, 0.62 * S, a0, a1); ctx.stroke();
+    }
+
+    // nodes update + hover
+    let best = null, bd = 28;
+    for (const id in W.nodes) {
+      const n = W.nodes[id];
+      let tx = n.tx, ty = n.ty;
+      if (n.orR) { n.oa += n.orS * dt * (W.awake ? 2 : 1); tx = Math.cos(n.oa) * n.orR; ty = Math.sin(n.oa) * n.orR; }
+      if (n.jit && !R) { tx += Math.sin(W.t * 0.7 + n.ph) * n.jit; ty += Math.cos(W.t * 0.53 + n.ph * 1.3) * n.jit; }
+      n.x += (tx - n.x) * k * 0.8; n.y += (ty - n.y) * k * 0.8;
+      n.a += (n.ta - n.a) * k; n.r += (n.tr - n.r) * k;
+      const tv = W.hidden && W.hidden.includes(n.L) ? 0 : (W.solo != null && n.L && n.L !== W.solo ? 0.12 : 1); n.vis += (tv - n.vis) * Math.min(1, k * 2.2);
+      for (let c = 0; c < 3; c++) n.col[c] += (n.tcol[c] - n.col[c]) * k;
+      if (!n.live && n.a < 0.01) { delete W.nodes[id]; continue; }
+      const p = this.proj(n.x, n.y); n.sx = p[0]; n.sy = p[1];
+      if (n.a * n.vis > 0.2 && hasM) { const d = Math.hypot(n.sx - W.mx, n.sy - W.my); n.prox = Math.max(0, 1 - d / 150); if (d < bd) { bd = d; best = id; } } else n.prox = 0;
+    }
+    if (W.hl && W.nodes[W.hl]) W.nodes[W.hl].prox = 1;
+    W.best = best; const hv = W.hl || best; if (hv !== W.lastHv) { W.lastHv = hv; if (hv) { this.sparkFrom(hv); if (!W.hl && best) this.sfx('spark'); } }
+
+    // edges
+    const drawQ = (A, B, cv, t0, t1) => { ctx.beginPath(); const steps = 22; for (let i = 0; i <= steps; i++) { const t = t0 + (t1 - t0) * i / steps; const [x, y] = qpt(A.sx, A.sy, B.sx, B.sy, cv, t); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); };
+    for (const id in W.edges) {
+      const e = W.edges[id], A = W.nodes[e.a], B = W.nodes[e.b];
+      if (!A || !B) { if (!e.live) delete W.edges[id]; continue; }
+      const d = e.tg - e.g; e.g += Math.sign(d) * Math.min(Math.abs(d), e.gs * dt);
+      e.s += (e.ts - e.s) * k; for (let c = 0; c < 3; c++) e.col[c] += (e.tcol[c] - e.col[c]) * k;
+      if (!e.live && e.s < 0.005) { delete W.edges[id]; continue; }
+      const al = Math.min(1, e.s * Math.min(A.a * (A.vis ?? 1), B.a * (B.vis ?? 1)) * (W.awake ? 1.6 : 1) * (1 + Math.max(A.prox, B.prox) * 0.8));
+      if (al < 0.004 || e.g <= 0.001) continue;
+      ctx.strokeStyle = `rgba(${e.col[0] | 0},${e.col[1] | 0},${e.col[2] | 0},${al})`; ctx.lineWidth = W.awake ? 1.1 : 0.9;
+      if (e.style === 'dash') { ctx.setLineDash([3, 5]); drawQ(A, B, e.curve, 0, e.g); ctx.setLineDash([]); }
+      else if (e.style === 'broken') { drawQ(A, B, e.curve, 0, Math.min(e.g, 0.43)); if (e.g > 0.57) drawQ(A, B, e.curve, 0.57, e.g); const [mx, my] = qpt(A.sx, A.sy, B.sx, B.sy, e.curve, 0.5); ctx.fillStyle = `rgba(240,98,86,${al * (0.6 + 0.4 * Math.sin(W.t * 3))})`; ctx.fillRect(mx - 1.5, my - 1.5, 3, 3); }
+      else { drawQ(A, B, e.curve, 0, e.g); if (e.style === 'gate' && e.g > 0.5) { const [mx, my] = qpt(A.sx, A.sy, B.sx, B.sy, e.curve, 0.5); ctx.beginPath(); ctx.arc(mx, my, 4, 0, TAU); ctx.stroke(); } }
+      const rate = e.rate + (W.awake ? 0.45 : 0) + W.charge * 1.5;
+      if (rate && e.g > 0.98 && Math.random() < rate * dt * (R ? 0.3 : 1)) W.pulses.push({ e: id, t: 0, sp: 0.35 + Math.random() * 0.3 + W.charge });
+    }
+    // pulses
+    for (let i = W.pulses.length - 1; i >= 0; i--) {
+      const p = W.pulses[i]; p.t += p.sp * dt;
+      let A, B, cv, col = [235, 242, 255], pv = 1;
+      if (p.free) { B = W.nodes[p.to]; if (!B) { W.pulses.splice(i, 1); continue; } const s = this.proj(p.fx, p.fy); A = { sx: s[0], sy: s[1] }; cv = 0.22; }
+      else { const e = W.edges[p.e]; if (!e) { W.pulses.splice(i, 1); continue; } A = W.nodes[e.a]; B = W.nodes[e.b]; cv = e.curve; col = e.col.map(c => Math.min(255, c + 30)); if (!A || !B || e.style === 'broken') { W.pulses.splice(i, 1); continue; } pv = Math.min(A.vis ?? 1, B.vis ?? 1); if (p.rev) { const t = A; A = B; B = t; cv = -cv; } if (p.t > e.g) { if (p.t > 1) W.pulses.splice(i, 1); continue; } }
+      if (p.t > 1) { W.pulses.splice(i, 1); if (p.then) this.pulseEdge(p.then, 0, p.thenRev); if (p.free && B) B.prox = 1; continue; }
+      if (p.t < 0) continue;
+      for (let j = 0; j < 7; j++) {
+        const tt = p.t - j * 0.022; if (tt < 0) break;
+        const [x, y] = qpt(A.sx, A.sy, B.sx, B.sy, cv, tt); const a = (1 - j / 7) * 0.9 * Math.min(1, (1 - p.t) * 6) * pv;
+        ctx.fillStyle = `rgba(${col[0] | 0},${col[1] | 0},${col[2] | 0},${a})`; ctx.beginPath(); ctx.arc(x, y, Math.max(0.4, 1.7 - j * 0.2), 0, TAU); ctx.fill();
+      }
+      if (p.free) { const [x, y] = qpt(A.sx, A.sy, B.sx, B.sy, cv, p.t); const gg = ctx.createRadialGradient(x, y, 0, x, y, 14); gg.addColorStop(0, 'rgba(200,215,255,0.35)'); gg.addColorStop(1, 'rgba(200,215,255,0)'); ctx.fillStyle = gg; ctx.fillRect(x - 14, y - 14, 28, 28); }
+    }
+    // sparks
+    for (let i = W.sparks.length - 1; i >= 0; i--) {
+      const sp = W.sparks[i], A = W.nodes[sp.a], B = W.nodes[sp.b]; sp.life -= dt * 2.4;
+      if (!A || !B || sp.life <= 0) { W.sparks.splice(i, 1); continue; }
+      const dx = B.sx - A.sx, dy = B.sy - A.sy, L = Math.hypot(dx, dy) || 1, px = -dy / L, py = dx / L;
+      ctx.strokeStyle = `rgba(215,228,255,${sp.life * 0.5 * Math.min(A.vis ?? 1, B.vis ?? 1)})`; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(A.sx, A.sy);
+      const reach = Math.min(1, (1 - sp.life) * 3 + 0.2);
+      for (let j = 1; j <= 8; j++) { const t = j / 8 * reach; const off = j === 8 && reach >= 1 ? 0 : (Math.random() - 0.5) * 12 * Math.sin(Math.PI * t); ctx.lineTo(A.sx + dx * t + px * off, A.sy + dy * t + py * off); }
+      ctx.stroke();
+    }
+    // nodes draw
+    ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace'; try { ctx.letterSpacing = '2px'; } catch (e) { }
+    for (const id in W.nodes) {
+      const n = W.nodes[id]; const na = n.a * (n.vis ?? 1); if (na < 0.01) continue;
+      const breathe = n.core ? 1 + Math.sin(W.t * 1.2) * 0.1 : 1;
+      const rr = n.r * (1 + n.prox * 0.8) * breathe; const c = n.col;
+      if (n.core) {
+        const cr = S * (0.06 + W.glow * 0.16) * breathe;
+        const cg = ctx.createRadialGradient(n.sx, n.sy, 0, n.sx, n.sy, cr);
+        cg.addColorStop(0, `rgba(210,222,255,${0.35 + W.glow * 0.35})`); cg.addColorStop(0.25, `rgba(120,150,240,${0.12 + W.glow * 0.15})`); cg.addColorStop(1, 'rgba(60,80,160,0)');
+        ctx.fillStyle = cg; ctx.fillRect(n.sx - cr, n.sy - cr, cr * 2, cr * 2);
+      }
+      const gr = rr * 7; const gg = ctx.createRadialGradient(n.sx, n.sy, 0, n.sx, n.sy, gr);
+      gg.addColorStop(0, `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${na * (0.3 + n.prox * 0.3)})`); gg.addColorStop(1, `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},0)`);
+      ctx.fillStyle = gg; ctx.fillRect(n.sx - gr, n.sy - gr, gr * 2, gr * 2);
+      ctx.fillStyle = `rgba(${(c[0] + 255) / 2 | 0},${(c[1] + 255) / 2 | 0},${(c[2] + 255) / 2 | 0},${na})`; ctx.beginPath(); ctx.arc(n.sx, n.sy, Math.max(0.6, rr * 0.62), 0, TAU); ctx.fill();
+      if (n.nm) {
+        const la = na * Math.max((!W.res && (n.lab || W.names || (n.L && W.solo === n.L))) ? 0.7 : 0, n.prox * 1.1);
+        if (la > 0.02 && n.sy > 78) { ctx.fillStyle = `rgba(${Math.min(255, c[0] + 20) | 0},${Math.min(255, c[1] + 20) | 0},${Math.min(255, c[2] + 20) | 0},${Math.min(1, la)})`; ctx.fillText(n.nm, n.sx + 9 + rr, n.sy + 3.5); }
+      }
+    }
+    // waves
+    for (let i = W.waves.length - 1; i >= 0; i--) {
+      const wv = W.waves[i]; wv.t += dt * (wv.soft ? 0.7 : 0.45); if (wv.t > 1) { W.waves.splice(i, 1); continue; } if (wv.t < 0) continue;
+      ctx.strokeStyle = `rgba(200,215,255,${(1 - wv.t) * (wv.soft ? 0.1 : 0.28)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, 0.02 * S + wv.t * S * 2.2, 0, TAU); ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    if (W.flash > 0) {
+      W.flash -= dt * 0.5; const fg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h));
+      fg.addColorStop(0, `rgba(240,98,86,${Math.max(0, W.flash) * 0.12})`); fg.addColorStop(1, `rgba(120,20,20,${Math.max(0, W.flash) * 0.2})`);
+      ctx.fillStyle = fg; ctx.fillRect(0, 0, w, h);
+    }
+  }
+
+  // ---------- actions ----------
+  enter() {
+    this.initAudio();
+    this.W.waves.push({ t: 0 }); this.W.waves.push({ t: -0.25 });
+    this.W.tglow = 0.4;
+    this.goTo(1);
+  }
+  goTo(s) {
+    if (s === this.state.stage || this.state.transit) return;
+    this.setState({ transit: true, transitTo: s }); this.sfx('move');
+    this.W.waves.push({ t: 0, soft: true });
+    this.later(() => {
+      this.setState(st => ({ stage: s, arriving: true, reached: Math.max(st.reached, s), transit: false, transitTo: null, wfOpen: null, netOpen: null }), () => {
+        if (this.panelRef.current) this.panelRef.current.scrollTop = 0;
+        requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ arriving: false })));
+        if (s === 5 && this.state.bIntro < 2) this.runDenied();
+      });
+    }, this.state.reading ? 420 : 750 * this.pace());
+  }
+  unlock(k, quiet) {
+    const keys = this.state.keys.slice(); keys[k] = 1;
+    this.setState({ keys }, () => {
+      this.sfx('unlock'); this.setMaster();
+      this.W.waves.push({ t: 0 }); this.pulseEdge('ck' + k, 0.1); this.pulseEdge('ck' + k, 0.5);
+      if (!quiet) this.later(() => { const p = this.panelRef.current; if (p) p.scrollTo({ top: p.scrollHeight, behavior: 'smooth' }); }, 200);
+    });
+  }
+  copy(key, text) {
+    const done = () => { this.setState({ copied: key }); clearTimeout(this.ct); this.ct = setTimeout(() => this.setState({ copied: null }), 1800); };
+    const fb = () => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove(); };
+    try { navigator.clipboard.writeText(text).then(done, () => { fb(); done(); }); } catch (e) { fb(); done(); }
+  }
+  togSig(i, el) { this.sfx('select'); const on = this.state.signals.includes(i); this.setState({ signals: on ? this.state.signals.filter(x => x !== i) : [...this.state.signals, i] }, () => { if (!on) this.fireFrom(el, 'sig' + i, 'sc' + i); }); }
+  togSrc(i, el) { this.sfx('select'); const on = this.state.sources.includes(i); this.setState({ sources: on ? this.state.sources.filter(x => x !== i) : [...this.state.sources, i] }, () => { if (!on) this.fireFrom(el, 'src' + i, 'sr' + i); }); }
+  undoSort() { const st = this.state; const keys = Object.keys(st.sorted).map(Number); if (!keys.length) return; const last = st.lastSort && st.sorted[st.lastSort.f] !== undefined ? st.lastSort.f : Math.max(...keys); const s2 = Object.assign({}, st.sorted); delete s2[last]; this.sfx('move'); this.setState({ sorted: s2, lastSort: null }); }
+  moveFrag(i, j, el) { if (this.state.sorted[i] === j) return; this.sfx('select'); this.setState({ sorted: Object.assign({}, this.state.sorted, { [i]: j }) }, () => this.fireFrom(el, 'area' + j, 'ac' + j, true)); }
+  sortTo(j, el) { const f = this.fragCursor(); if (f < 0) return; this.sfx('select'); this.setState({ sorted: Object.assign({}, this.state.sorted, { [f]: j }), lastSort: { f, j } }, () => this.fireFrom(el, 'area' + j, 'ac' + j, true)); }
+  pickAction(i, el) {
+    this.sfx('select');
+    const cur = this.state.action, on = cur.includes(i), first = !cur.length;
+    const next = on ? cur.filter(x => x !== i) : [...cur, i];
+    this.setState({ action: next, focus: next.includes(this.state.focus) ? this.state.focus : null, part2: next.length ? this.state.part2 : false }, () => { if (!on) this.fireFrom(el, 'know', 'syn'); });
+  }
+  actTxt() { const a = this.state.action; return a.length ? a.slice().sort((x, y) => x - y).map(i => ACTIONS[i]).join(', ') : ''; }
+  setWf(j, v, advance, el) {
+    if (advance) this.sfx('select');
+    const wf = Object.assign({}, this.state.wf, { [WF[j].k]: v });
+    let nx = this.state.wfOpen;
+    if (advance) { nx = null; for (let c = 0; c < WF.length; c++) if (!wf[WF[c].k]) { nx = c; break; } }
+    this.setState({ wf, wfOpen: nx }, () => { if (advance && el) this.fireFrom(el, 'wf' + j); });
+  }
+  classify(i, c, el) { this.sfx('select'); this.setState({ bounds: Object.assign({}, this.state.bounds, { [i]: c }) }, () => this.fireFrom(el, 'conn' + i, 'cn' + i, true)); }
+  pickMove(i) { this.sfx('select'); this.setState({ move: i, netOpen: this.state.move == null ? 0 : this.state.netOpen }); }
+  setNet(slot, tool, el) {
+    this.sfx('select');
+    const net = Object.assign({}, this.state.net, { [NET_KEYS[slot]]: tool });
+    let nx = null; for (let q = 0; q < 5; q++) if (net[NET_KEYS[q]] === undefined) { nx = q; break; }
+    this.setState({ net, netOpen: nx }, () => { this.fireFrom(el, 'tool' + tool); for (let j = 0; j < 5; j++) this.pulseEdge('np' + j, j * 0.9); });
+  }
+  holdStart(e) {
+    if (this.state.awake || this.charging) return; if (e && e.preventDefault) e.preventDefault();
+    this.charging = true; const t0 = performance.now(); const dur = 1700 * this.pace();
+    const tick = () => { if (!this.charging) return; const c = Math.min(1, (performance.now() - t0) / dur); this.setState({ charge: c }); if (c >= 1) this.awaken(); else this.chargeRaf = requestAnimationFrame(tick); };
+    tick();
+  }
+  holdEnd() { if (!this.charging) return; this.charging = false; cancelAnimationFrame(this.chargeRaf); if (!this.state.awake) this.setState({ charge: 0 }); }
+  awaken() {
+    this.charging = false; const keys = this.state.keys.slice(); keys[6] = 1;
+    this.setState({ awake: true, charge: 0, fin: 0, keys }, () => {
+      this.sfx('awaken'); this.setMaster();
+      const W = this.W; W.trot = W.rot;
+      [0, -0.3, -0.6].forEach(t => W.waves.push({ t }));
+      for (const id in W.edges) W.pulses.push({ e: id, t: -Math.random() * 1.6, sp: 0.5 + Math.random() * 0.4 });
+      if (this.panelRef.current) this.panelRef.current.scrollTop = 0;
+      const p = this.pace();
+      this.later(() => this.setState({ fin: 1 }), 900 * p);
+      this.later(() => this.setState({ fin: 2 }), 4600 * p);
+      this.later(() => this.setState({ fin: 3 }), 6400 * p);
+    });
+  }
+  restart() {
+    this.timers.forEach(clearTimeout); this.timers = [];
+    try { localStorage.removeItem(LS); } catch (e) { }
+    const W = this.W; W.nodes = {}; W.edges = {}; W.pulses = []; W.sparks = []; W.waves = []; W.rot = W.trot = 0;
+    this.setState(Object.assign(JSON.parse(JSON.stringify(INIT)), TRANSIENT, { muted: this.state.muted, reading: this.state.reading, paused: this.state.paused }), () => this.runIntro());
+  }
+
+  // ---------- content ----------
+  sigLabels() { const st = this.state; const l = st.signals.slice().sort((a, b) => a - b).map(i => SIGNALS[i].t); if (st.custom.trim()) l.push(st.custom.trim()); return l; }
+  srcLabels() { return this.state.sources.slice().sort((a, b) => a - b).map(i => SOURCES[i]); }
+  netPath() { const n = this.state.net; const t = k => (n[k] !== undefined && n[k] !== null) ? TOOLS[n[k]] : '—'; return [t('source'), 'Core Brain', t('reasoning'), t('action'), t('validation'), t('destination')].join(' → '); }
+  boundGroups() { const st = this.state; return CLASSES.map(c => ({ c, items: CONNS.map((x, i) => ({ x, i })).filter(o => st.bounds[o.i] === c.k) })); }
+  areaLines() { const st = this.state; return AREAS.map((a, j) => { const fr = Object.keys(st.sorted).filter(f => st.sorted[f] === j).map(f => FRAGS[f].t); return fr.length ? `${a.n}: ${fr.join(' · ')}` : null; }).filter(Boolean); }
+  lc(s) { return s ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
+  nextExperiment() {
+    const w = this.state.wf; const act = this.actTxt() || 'act';
+    return `When ${this.lc(w.trigger || 'the trigger happens')}, AI will ${this.lc(w.action || act)} using ${w.knowledge || 'the Core Brain'}. ${w.validation ? 'Check: ' + this.lc(w.validation) + '. ' : ''}Output: ${this.lc(w.output || 'a result')}${w.next ? ' → ' + this.lc(w.next) : ''}. Run it by hand once before automating anything.`;
+  }
+  p1() { const s = this.sigLabels(); return P1 + (s.length ? `\n\nSignals I’ve already noticed:\n${s.map(x => '- ' + x).join('\n')}` : ''); }
+  p2() { const s = this.srcLabels(); return P2 + (s.length ? `\n\nOur knowledge currently lives in: ${s.join(', ')}.` : ''); }
+  p3() {
+    const s = this.srcLabels(), a = this.areaLines();
+    return `I’m building a small Core Brain: a structured knowledge layer my team and our AI tools can consult.
+
+Our knowledge currently lives in: ${s.join(', ') || '[sources]'}.
+
+Use this structure:
+00_START_HERE — what this brain is for and how to use it
+01_PRINCIPLES — what we believe
+02_DOMAIN_KNOWLEDGE — what we know
+03_PATTERNS — how we usually solve things
+04_RULES — what must be respected
+05_PROCESSES — how work moves
+06_VALIDATION — how we know something is good enough
+07_EXAMPLES — reference cases
+${a.length ? `\nEntries I’ve already sorted:\n${a.map(x => '- ' + x).join('\n')}\n` : ''}
+For each file, tell me what to extract from each source, what a good entry looks like, and what to leave out. Keep entries short, specific and attributable to a source. Flag anything that belongs in more than one file.`;
+  }
+  wfCanvas() { const st = this.state; return `AI WORKFLOW CANVAS\n\n${st.focus != null ? 'Focus capability: ' + ACTIONS[st.focus] + '\n' : ''}Capabilities: ${this.actTxt() || '—'}\n\n` + WF.map(w => `${w.n.toUpperCase().padEnd(11)} ${st.wf[w.k] || '—'}`).join('\n'); }
+  p4() {
+    const st = this.state;
+    return `Help me turn this into a working AI-assisted workflow.
+${st.focus != null ? 'This workflow focuses on: ' + ACTIONS[st.focus] + '\n' : ''}
+Capabilities we want AI to support: ${this.actTxt() || '[action]'}
+${WF.map(w => `${w.n}: ${st.wf[w.k] || '—'}`).join('\n')}
+
+For each step, define what the AI is responsible for, what a person is responsible for, what could go wrong, and how we’d notice. Suggest the simplest version I could run manually this week before automating anything.`;
+  }
+  p5() { const g = this.boundGroups().filter(x => x.items.length); return P5 + (g.length ? `\n\nHow I’ve classified our connections:\n${g.map(x => `- ${x.c.n}: ${x.items.map(o => o.x.t + (x.c.k === 'blocked' ? ` (bridge: ${BRIDGES[o.x.b]})` : '')).join('; ')}`).join('\n')}` : ''); }
+  archCanvas() {
+    const st = this.state, n = st.net;
+    return `TOOL-AGNOSTIC AI ARCHITECTURE\n\nWhat moves: ${st.move != null ? MOVES[st.move] : '—'}\n\n` + NET.map(x => `${x.n.toUpperCase().padEnd(12)} ${x.fixed || (n[x.k] !== undefined ? TOOLS[n[x.k]] : '—')}  — ${x.d}`).join('\n   ↓\n');
+  }
+  p6() {
+    const st = this.state;
+    return `I want to design how knowledge moves through my team’s tools — not which tools to buy.
+
+What needs to move: ${st.move != null ? MOVES[st.move] : '[knowledge]'}
+Flow: ${this.netPath()}
+
+For each handoff, recommend the lightest reliable mechanism (direct integration, API, export/import, repository, plugin, human handoff). Keep every tool replaceable: describe each handoff by the knowledge it carries, not the product it uses. Highlight where context is most likely to get lost.`;
+  }
+  p7() {
+    const st = this.state, g = this.boundGroups().filter(x => x.items.length);
+    return `I want to create the first small AI-assisted workflow for my team.
+
+${(st.wf.name || '').trim() ? 'The workflow I want to improve:\n' + (st.wf.name || '').trim() + '\n\n' : ''}Here is the recurring problem:
+${this.sigLabels().join('; ') || '[USER OPPORTUNITY]'}
+
+Relevant knowledge currently lives in:
+${this.srcLabels().join(', ') || '[USER SOURCES]'}
+
+The AI should:
+${st.focus != null ? ACTIONS[st.focus] : (this.actTxt() || '[USER ACTION]')}${st.wf.action ? ' — ' + this.lc(st.wf.action) : ''}
+
+The workflow should follow:
+${WF.filter(w => w.k !== 'name').map(w => st.wf[w.k] || w.n).join(' → ')}
+
+These constraints apply:
+${g.map(x => `${x.c.n}: ${x.items.map(o => o.x.t).join('; ')}`).join('\n') || '[USER BOUNDARIES]'}
+
+The environments involved are:
+${this.netPath()}
+
+Help me design the smallest useful version I could prototype first.
+
+Define:
+1. Trigger
+2. Required context
+3. Knowledge required
+4. AI responsibility
+5. Human responsibility
+6. Validation
+7. Output
+8. Tool handoffs
+9. Failure / fallback behavior
+10. What I should test first
+
+Keep the experiment intentionally small.
+
+Do not propose an entire AI platform.`;
+  }
+  bpSections() {
+    const st = this.state, g = this.boundGroups();
+    const bl = g.map(x => x.items.length ? `${x.c.n} — ${x.items.map(o => o.x.t + (x.c.k === 'blocked' ? ` (via ${BRIDGES[o.x.b].toLowerCase()})` : '')).join('; ')}` : null).filter(Boolean);
+    return [
+      { t: 'My Opportunity', d: 'The recurring problem I want to improve.', lines: this.sigLabels() },
+      { t: 'My Hidden Knowledge', d: 'Where the relevant intelligence currently lives.', lines: [this.srcLabels().join(', ')] },
+      { t: 'My Brain', d: 'How that knowledge should be structured.', lines: this.areaLines() },
+      { t: 'My First Workflow', d: 'Workflow → Trigger → Context → Knowledge → Action → Validation → Output → Next', lines: [].concat(st.focus != null ? [`Focus: ${ACTIONS[st.focus]}`] : []).concat([`Capabilities: ${this.actTxt() || '—'}`]).concat(WF.map(w => `${w.n} — ${st.wf[w.k] || '—'}`)) },
+      { t: 'My Boundaries', d: 'What AI can do, cannot do, and where people stay involved.', lines: bl },
+      { t: 'My Network', d: 'How knowledge moves between environments.', lines: [`${st.move != null ? MOVES[st.move] : 'Knowledge'} moves: ${this.netPath()}`] },
+      { t: 'My Next Experiment', d: 'One small workflow to prototype first.', lines: [this.nextExperiment()] }
+    ].map(s => Object.assign(s, { lines: s.lines.filter(Boolean).length ? s.lines.filter(Boolean) : ['—'] }));
+  }
+  bpMarkdown() { return `# My AI Work Brain Blueprint\n\n_What do you know that your tools don’t?_\n\n` + this.bpSections().map((s, i) => `## 0${i + 1} ${s.t}\n_${s.d}_\n\n${s.lines.map(l => '- ' + l).join('\n')}`).join('\n\n') + `\n\n---\n\n## First Experiment Builder\n\n${this.p7()}\n\n---\n\n© 2026 ${this.props.authorName || 'Your Name'} · The Hidden Brain · ${this.props.linkedinUrl || ''} · ${this.props.authorEmail || ''}\n`; }
+  toolkitData() {
+    return [
+      ['Opportunity Finder', 'Find repetition worth turning into a system.', 'Describe a normal week. It surfaces the patterns before you choose any tool.', this.p1()],
+      ['Knowledge Extraction', 'Turn documents into guidance.', 'Feed it one source at a time. It separates principles from rules and flags contradictions.', this.p2()],
+      ['Brain Builder', 'Structure your Core Brain.', 'Uses your sources and the fragments you sorted to plan each file.', this.p3()],
+      ['Workflow Architect', 'Design the first workflow.', 'Turns your canvas into responsibilities, failure points and a manual first run.', this.p4()],
+      ['Constraint Architect', 'Design within your limits.', 'Makes security and approvals part of the architecture, not an afterthought.', this.p5()],
+      ['Network Architect', 'Map how knowledge moves.', 'Describes handoffs by what they carry, so every tool stays replaceable.', this.p6()],
+      ['First Experiment Builder', 'Prototype the smallest useful version.', 'Everything you chose on this journey, assembled into one brief.', this.p7()]];
+  }
+
+  renderVals() {
+    const st = this.state, s = st.stage, k = s - 1, T = st.transit;
+    const chip = (label, sel, i, onClick, node, opt = {}) => ({
+      label, sel, onClick,
+      bc: sel ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: sel ? 'rgba(188,208,255,.09)' : 'rgba(5,8,14,.4)', fc: sel ? '#f3f6fc' : '#98a2b8',
+      dot: sel ? (opt.col || '#eef3ff') : 'rgba(188,208,255,.28)', glow: sel ? `0 0 10px 2px ${opt.col || 'rgba(190,210,255,.75)'}` : 'none',
+      delay: ((opt.d0 ?? 0.6) + i * 0.06).toFixed(2) + 's', ml: opt.ml || '0px',
+      onEnter: () => this.hl(node), onLeave: () => this.hl(null)
+    });
+    const kn = st.keys.reduce((a, b) => a + b, 0);
+    const sel = this.sigSel();
+    const ready = [false, sel.length >= 1, st.sources.length >= 2, Object.keys(st.sorted).length >= 6, st.part2 && st.action.length > 0 && WF.filter(w => st.wf[w.k]).length >= 5, CONNS.every((c, i) => st.bounds[i]), st.move != null && NET_KEYS.every(x => st.net[x] !== undefined)];
+    this._ready = ready;
+    const INS = [null,
+      [['You don’t have an AI problem yet.', 0], ['You have repetition worth turning into a system.', 1]],
+      [['You don’t need more knowledge.', 0], ['You need to make what you have usable.', 1]],
+      [['Structure tells AI what something means —', 0], ['not just what it says.', 1]],
+      [['Now your knowledge does something.', 0], ['That’s the first real connection.', 1]],
+      [['Limits aren’t the enemy.', 0], ['They shape a design that actually ships.', 1]],
+      [['Your tools are replaceable.', 0], ['The flow of knowledge is what lasts.', 1]]];
+    const inRange = s >= 1 && s <= 6;
+    const ARTS = [null,
+      ['AI Opportunity Finder', 'Paste this into your AI with a description of a normal week. It will point out where AI can save the most time.', () => this.p1(), 'prompt'],
+      ['Knowledge Extraction Prompt', 'Give this to your AI along with a document or guideline. It pulls out the parts that should guide future work.', () => this.p2(), 'prompt'],
+      ['Core Brain Starter Structure', 'Eight files — one for each kind of knowledge. Easy for people to maintain, easy for AI to read.', () => STRUCT, 'structure'],
+      ['AI Workflow Canvas', 'Your workflow on one page — from which task it is, to what starts it, to where the result goes.', () => this.wfCanvas(), 'canvas'],
+      ['Constraint-to-Architecture Prompt', 'Describe your tools and restrictions, and this prompt designs a workflow that respects them.', () => this.p5(), 'prompt'],
+      ['Tool-Agnostic AI Architecture Canvas', 'The flow of knowledge, independent of any product. Swap a tool and the design still works.', () => this.archCanvas(), 'canvas']];
+    let art = {};
+    if (inRange && st.keys[k]) {
+      const A = ARTS[s], text = A[2]();
+      art = {
+        eyebrow: `Key 0${s} unlocked · yours to keep`, title: A[0], purpose: A[1], text,
+        copyLabel: st.copied === 'art' + s ? 'Copied' : 'Copy ' + A[3], onCopy: () => this.copy('art' + s, text),
+        nextLabel: `0${s + 1} · ${STAGES[s]}`, onNext: () => this.goTo(s + 1),
+        isBrain: s === 3, brainOpen: s === 3 && st.brainOpen, brainGenLabel: st.brainOpen ? 'Hide brain prompt' : 'Build a prompt from my sources',
+        onBrainGen: () => this.setState({ brainOpen: !st.brainOpen }), brainText: this.p3(),
+        brainCopyLabel: st.copied === 'brain' ? 'Copied' : 'Copy brain prompt', onBrainCopy: () => this.copy('brain', this.p3())
+      };
+    }
+    const cnt = [0, 0, 0, 0, 0, 0]; Object.values(st.sorted).forEach(j => cnt[j]++);
+    const fc = this.fragCursor(); const chroma = this.props.chroma ?? true;
+    const srcs = this.srcLabels();
+    const curFrag = fc >= 0 ? { t: FRAGS[fc].t, from: st.sources.length ? SOURCES[st.sources[fc % st.sources.length]] : FRAGS[fc].f, no: Object.keys(st.sorted).length + 1, key: 'f' + fc } : {};
+    const ls = st.lastSort; const lastSort = ls ? { t: FRAGS[ls.f].t, a: AREAS[ls.j].n, col: chroma ? rgb(AREA_RGB[ls.j]) : '#dfe6f5' } : {};
+    const wfC = st.wfOpen != null ? WF[st.wfOpen] : null;
+    const all5 = CONNS.every((c, i) => st.bounds[i]);
+    const usedBridges = CONNS.filter((c, i) => st.bounds[i] === 'blocked').map(c => c.b);
+    const bg = this.boundGroups();
+    const hum = bg[2].items, blk = bg[3].items;
+    const camS = st.transitTo ?? s;
+    const narrow = st.narrow;
+    const results = s === 7 && st.awake && st.fin >= 3;
+
+    return {
+      canvasRef: this.canvasRef, panelRef: this.panelRef,
+      isEntry: s === 0, inQuest: s >= 1,
+      showShadeWide: s >= 1 && !narrow && !st.reading, showShadeNarrow: s >= 1 && narrow && !st.reading,
+      touchBrain: () => { const W = this.W; this.initAudio(); if (W && W.best) { this.sparkFrom(W.best); this.sparkFrom(W.best); this.sfx('zap'); } else if (W) { W.waves.push({ t: 0, soft: true }); } },
+      canvasCursor: 'crosshair',
+      rootFilter: st.reading ? 'invert(1) hue-rotate(180deg)' : 'none', rootBg: st.reading ? '#0e0c0b' : '#04060b', bandBg: st.reading ? 'linear-gradient(180deg,rgba(14,12,11,.96) 0%,rgba(14,12,11,.85) 50%,rgba(14,12,11,0) 100%)' : 'linear-gradient(180deg,rgba(4,6,11,.95) 0%,rgba(4,6,11,.8) 45%,rgba(4,6,11,0) 100%)',
+      pausedOn: st.paused, playingOn: !st.paused, pauseAria: st.paused ? 'Play background animation' : 'Pause background animation', pauseBg: st.paused ? 'rgba(188,208,255,.14)' : 'transparent', pauseFc: st.paused ? '#f3f6fc' : '#98a2b8', togglePause: () => this.setState({ paused: !st.paused }),
+      mutedOn: st.muted, soundBg: st.muted ? 'transparent' : 'rgba(188,208,255,.08)', readBg: st.reading ? 'rgba(188,208,255,.14)' : 'transparent', readAria: st.reading ? 'Exit reading mode' : 'Reading mode — plain document, no motion',
+      docStep: s >= 1 ? `Step ${Math.min(s, 7)} of 7` : '',
+      tocItems: STAGES.map((n, i) => { const here = s === i + 1, can = i + 1 <= st.reached && !here; return { no: '0' + (i + 1), n, current: here ? 'step' : 'false', disabled: !can, cursor: can ? 'pointer' : 'default', fc: here ? '#f3f6fc' : (i + 1 <= st.reached ? '#98a2b8' : '#4f5970'), bc: here ? 'rgba(222,231,255,.7)' : 'transparent', onClick: () => { if (can) this.goTo(i + 1); } }; }),
+      readingAttr: st.reading ? 'on' : 'off', canvasDisplay: st.reading ? 'none' : 'block', readingOn: st.reading, readFc: st.reading ? '#f3f6fc' : '#98a2b8', readKx: st.reading ? '12px' : '2px', toggleReading: () => this.toggleReading(),
+      soundOn: !st.muted, soundLabel: st.muted ? 'Sound off' : 'Sound on', soundAria: st.muted ? 'Turn sound on' : 'Mute sound', soundFc: st.muted ? '#7d89a3' : '#e8ecf4', toggleMute: () => this.toggleMute(),
+      soundBars: [5, 10, 7, 11].map(v => ({ h: st.muted ? '2px' : v + 'px' })), showRestartTop: st.reached >= 1,
+      intro1: st.intro >= 1, intro2: st.intro >= 2, intro3: st.intro >= 3, intro4: st.intro >= 4,
+      enter: () => this.enter(), restart: () => this.restart(),
+      panelOpacity: (T || st.arriving) ? 0 : 1, panelBlur: T && !st.reading ? '12px' : '0px', panelShift: T ? (st.reading ? '-90px' : '-48px') : (st.arriving ? (st.reading ? '90px' : '40px') : '0px'),
+      panelTrans: st.arriving ? 'none' : (st.reading ? 'opacity .35s ease,transform .5s cubic-bezier(.3,.7,.2,1)' : 'opacity .7s ease,filter .7s ease,transform .9s cubic-bezier(.2,.7,.2,1)'),
+      pageMax: st.reading ? (results ? '1000px' : '780px') : 'none', pageMargin: st.reading ? '0 auto' : '0', pagePad: st.reading ? (narrow ? '36px 22px 48px' : '64px 76px 72px') : '0',
+      pageBg: st.reading ? '#000000' : 'transparent', pageBd: st.reading ? '#221f1b' : 'transparent', pageRadius: st.reading ? '6px' : '0', pageShadow: st.reading ? '0 1px 2px rgba(255,255,255,.06), 0 2px 10px rgba(255,255,255,.04)' : 'none',
+      showOutline: st.reading && !narrow && s >= 1, tocInline: narrow,
+      outline: STAGES.map((n, i) => { const here = s === i + 1, reached = i + 1 <= st.reached, done = !!st.keys[i], can = reached && !here;
+        return { no: '0' + (i + 1), n, current: here ? 'step' : 'false', disabled: !can, cursor: can ? 'pointer' : 'default',
+          bg: here ? '#020a1a' : 'transparent', fc: here ? '#8ab4f8' : (reached ? '#c4c7c5' : '#5f6368'), fw: here ? '500' : '400', nc: here ? '#8ab4f8' : '#7c8084',
+          hover: can ? 'background:#141414' : '', status: done ? '✓' : (reached ? '' : 'Locked'), sc: done ? '#81c995' : '#5f6368', onClick: () => { if (can) this.goTo(i + 1); } }; }),
+      panelW: (narrow || results || st.reading) ? '100%' : 'min(660px,100%)', panelPad: st.reading ? (narrow ? '84px 12px 120px' : '88px 40px 120px 290px') : narrow ? (results ? '30vh 20px 150px 20px' : '46vh 24px 150px 24px') : (results ? '15vh 6vw 180px 7vw' : '15vh 56px 180px 7vw'),
+      showResultsShade: results && !st.reading,
+      isS1: s === 1, isS2: s === 2, isS3: s === 3, isS4: s === 4, isS5: s === 5, isS6: s === 6,
+      isS7pre: s === 7 && !st.awake, isS7post: s === 7 && st.awake,
+
+      sigChips: SIGNALS.map((x, i) => chip(x.t, st.signals.includes(i), i, e => this.togSig(i, e.currentTarget), 'sig' + i, { ml: (narrow ? Math.round(rnd(i + 100) * 16) : Math.round(rnd(i + 100) * 60)) + 'px' })),
+      customOpen: st.customOn, customClosed: !st.customOn, custom: st.custom,
+      openCustom: () => this.setState({ customOn: true }),
+      onCustom: e => { const v = e.target.value; const was = st.custom.trim(); const el = e.target; this.setState({ custom: v }, () => { if (!was && v.trim()) this.fireFrom(el, 'sig9', 'sc9'); }); },
+      customBc: st.custom.trim() ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.22)', customDot: st.custom.trim() ? '#eef3ff' : 'rgba(188,208,255,.28)', customGlow: st.custom.trim() ? '0 0 10px 2px rgba(190,210,255,.75)' : 'none',
+
+      srcChips: SOURCES.map((x, i) => chip(x, st.sources.includes(i), i, e => this.togSrc(i, e.currentTarget), 'src' + i, { d0: 0.7 })),
+
+      hasFrag: fc >= 0, allSorted: fc < 0, curFrag, hasLastSort: !!ls && fc >= 0, lastSort,
+      sortProgress: fc < 0 ? '8 of 8 sorted' : `${Object.keys(st.sorted).length} of 8 sorted`,
+      sortSegs: FRAGS.map((f, i) => { const j = st.sorted[i]; const c = j !== undefined ? (chroma ? rgb(AREA_RGB[j]) : '#dfe6f5') : (i === fc ? 'rgba(236,242,255,.45)' : 'rgba(188,208,255,.12)'); return { bg: c, glow: j !== undefined ? '0 0 6px ' + c : 'none' }; }),
+      canUndo: Object.keys(st.sorted).length > 0, undoSort: () => this.undoSort(), resetSort: () => this.setState({ sorted: {}, lastSort: null }),
+      sortedCards: fc < 0 ? FRAGS.map((f, i) => ({ no: '0' + (i + 1), t: f.t, onEnter: () => this.hl('frag' + i), onLeave: () => this.hl(null),
+        opts: AREAS.map((ar, j) => { const on = st.sorted[i] === j, col = chroma ? rgb(AREA_RGB[j]) : '#dfe6f5'; return { n: ar.n, sel: on, col, bc: on ? col : 'rgba(188,208,255,.12)', bg: on ? 'rgba(188,208,255,.08)' : 'transparent', fc: on ? '#f3f6fc' : '#6b7590', onClick: e => this.moveFrag(i, j, e.currentTarget) }; }) })) : [],
+      areaBtns: AREAS.map((a, j) => {
+        const col = chroma ? rgb(AREA_RGB[j]) : '#dfe6f5';
+        return { n: a.n, d: a.d, cnt: cnt[j] ? String(cnt[j]) : '', col, glow: cnt[j] ? `0 0 10px 2px ${col}` : 'none', bc: cnt[j] ? 'rgba(222,231,255,.3)' : 'rgba(188,208,255,.12)', delay: (0.8 + j * 0.07).toFixed(2) + 's', disabled: fc < 0, cursor: fc < 0 ? 'default' : 'pointer', onClick: e => this.sortTo(j, e.currentTarget), onEnter: () => this.hl('area' + j), onLeave: () => this.hl(null) };
+      }),
+
+      actChips: ACTIONS.map((x, i) => chip(x, st.action.includes(i), i, e => this.pickAction(i, e.currentTarget), st.action.includes(i) ? 'do' : 'know')),
+      actHint: st.action.length ? `${st.action.length} selected · choose as many as you like` : 'Choose all that apply',
+      hasAction: st.action.length > 0, hasPart2: st.part2 && st.action.length > 0, showP1Continue: !st.part2 && st.action.length > 0,
+      goPart2: () => { this.sfx('move'); this.setState({ part2: true, focus: st.action.length === 1 ? st.action[0] : st.focus, wfOpen: st.wfOpen ?? 0 }, () => { this.later(() => { const p = this.panelRef.current; if (p) p.scrollTo({ top: p.scrollTop + 520, behavior: 'smooth' }); }, 120); }); },
+      p1Bc: st.part2 ? 'rgba(188,208,255,.14)' : 'rgba(222,231,255,.55)', p1Fc: st.part2 ? '#7d89a3' : '#f3f6fc', p2Bc: st.part2 ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', p2Fc: st.part2 ? '#f3f6fc' : '#5f6a82',
+      focusChips: st.action.slice().sort((a, b) => a - b).map(i => { const on = st.focus === i; return { label: ACTIONS[i], sel: on, bc: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.09)' : 'transparent', fc: on ? '#f3f6fc' : '#98a2b8', ring: on ? '#eef3ff' : 'rgba(188,208,255,.3)', dot: on ? '#eef3ff' : 'transparent', onClick: () => { this.sfx('select'); this.setState({ focus: i }); } }; }),
+      wfNodes: WF.map((w, j) => { const f = !!st.wf[w.k], o = st.wfOpen === j; return { n: w.n, ring: o ? 'rgba(236,242,255,.85)' : (f ? 'rgba(222,231,255,.45)' : 'rgba(188,208,255,.2)'), dot: f ? '#eef3ff' : (o ? 'rgba(236,242,255,.5)' : 'rgba(188,208,255,.18)'), glow: f ? '0 0 10px 2px rgba(190,210,255,.8)' : 'none', lc: o ? '#f3f6fc' : (f ? '#c9d3ea' : '#6b7590'), onClick: () => this.setState({ wfOpen: o ? null : j }), onEnter: () => this.hl('wf' + j), onLeave: () => this.hl(null) }; }),
+      wfName: st.wfName, onWfName: e => this.setState({ wfName: e.target.value }), wfNameBc: (st.wf.name || '').trim() ? 'rgba(222,231,255,.5)' : 'rgba(188,208,255,.2)',
+      wfStepNo: Math.min(WF.length, WF.filter(w => st.wf[w.k]).length + 1), wfTotal: WF.length, wfPct: Math.round(WF.filter(w => st.wf[w.k]).length / WF.length * 100) + '%',
+      wfSteps: (() => {
+        let reach = 0; while (reach < WF.length && st.wf[WF[reach].k]) reach++;
+        return WF.map((w, j) => {
+          const v = st.wf[w.k] || '', done = !!v, open = st.wfOpen === j, locked = j > reach, current = j === reach && !open;
+          const isOpt = w.o.includes(v), cust = (st.wfDraft && st.wfDraft[j] !== undefined) ? st.wfDraft[j] : (isOpt ? '' : v);
+          const go = el => { const t = (cust || '').trim(); if (t) { this.setState({ wfDraft: Object.assign({}, st.wfDraft, { [j]: undefined }) }); this.setWf(j, t, true, el); } };
+          return {
+            no: '0' + (j + 1), n: w.n, q: w.q, ans: v, open, locked, cursor: locked ? 'default' : 'pointer',
+            showAns: done && !open, showQ: !done && !open, showEdit: done && !open,
+            op: locked ? 0.35 : 1, lc: open ? '#bcd0ff' : (done ? '#8e98ad' : (current ? '#c9d3ea' : '#6b7590')),
+            ring: open ? 'rgba(236,242,255,.9)' : (done ? 'rgba(222,231,255,.45)' : 'rgba(188,208,255,.2)'), ringGlow: open ? '0 0 16px rgba(150,180,255,.45)' : 'none',
+            dot: done ? '#eef3ff' : (open ? 'rgba(236,242,255,.55)' : 'rgba(188,208,255,.15)'), glow: done ? '0 0 10px 2px rgba(190,210,255,.8)' : 'none',
+            line: done ? 'linear-gradient(180deg,rgba(236,242,255,.7),rgba(188,208,255,.35))' : 'rgba(188,208,255,.12)', lineOp: j === WF.length - 1 ? 0 : 1,
+            onOpen: () => { if (!locked) this.setState({ wfOpen: open ? null : j }); }, onEnter: () => this.hl('wf' + j), onLeave: () => this.hl(null),
+            opts: open ? w.o.map(o => { const on = v === o; return { label: o, bc: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.09)' : 'transparent', fc: on ? '#f3f6fc' : '#98a2b8', onClick: e => this.setWf(j, o, true, e.currentTarget) }; }) : [],
+            custom: cust, canGo: !!(cust || '').trim(),
+            onInput: e => this.setState({ wfDraft: Object.assign({}, st.wfDraft, { [j]: e.target.value }) }),
+            onKey: e => { if (e.key === 'Enter') go(e.target); }, onGo: e => go(e.currentTarget)
+          };
+        });
+      })(),
+      wfEditing: !!wfC,
+      wfCur: wfC ? {
+        q: wfC.q, val: st.wf[wfC.k] || '',
+        opts: wfC.o.map(o => { const on = st.wf[wfC.k] === o; return { label: o, bc: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.09)' : 'transparent', fc: on ? '#f3f6fc' : '#98a2b8', onClick: e => this.setWf(st.wfOpen, o, true, e.currentTarget) }; }),
+        onInput: e => this.setWf(st.wfOpen, e.target.value, false),
+        onKey: e => { if (e.key === 'Enter' && e.target.value.trim()) this.setWf(st.wfOpen, e.target.value.trim(), true, e.target); }
+      } : { opts: [] },
+
+      bI0: st.bIntro === 0, bI1: st.bIntro === 1, bI2: st.bIntro >= 2,
+      classLegend: CLASSES.map(c => ({ n: c.n, d: c.d, col: c.c })),
+      connRows: CONNS.map((c, i) => ({
+        t: c.t, delay: (0.9 + i * 0.08).toFixed(2) + 's', onEnter: () => this.hl('conn' + i), onLeave: () => this.hl(null),
+        hasBridge: all5 && st.bounds[i] === 'blocked', bridge: BRIDGES[c.b].toLowerCase(), bDelay: (0.6 + i * 0.1).toFixed(2) + 's',
+        opts: CLASSES.map(cl => { const on = st.bounds[i] === cl.k; return { n: cl.n, sel: on, bc: on ? cl.c : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.06)' : 'transparent', fc: on ? cl.c : '#7d89a3', onClick: e => this.classify(i, cl.k, e.currentTarget) }; })
+      })),
+      allClassified: all5,
+      bridgeChips: BRIDGES.map((b, i) => { const u = usedBridges.includes(i); return { n: b, bc: u ? 'rgba(120,210,220,.6)' : 'rgba(188,208,255,.14)', fc: u ? 'rgb(150,222,230)' : '#7d89a3', delay: (0.4 + i * 0.12).toFixed(2) + 's' }; }),
+
+      moveChips: MOVES.map((x, i) => chip(x, st.move === i, i, () => this.pickMove(i), 'core', { d0: 1 })),
+      hasMove: st.move != null,
+      netSlots: NET.map((x, j) => {
+        if (x.fixed) return { n: x.n, d: x.d, v: x.fixed, vc: '#eef2fa', lc: '#bcd0ff', dot: '#eef3ff', glow: '0 0 10px 2px rgba(190,210,255,.8)', cursor: 'default', open: false, tools: [], onClick: () => { }, onEnter: () => this.hl('core'), onLeave: () => this.hl(null) };
+        const si = NET_KEYS.indexOf(x.k), v = st.net[x.k], has = v !== undefined, o = st.netOpen === si;
+        return {
+          n: x.n, d: x.d, v: has ? TOOLS[v] : 'Choose where', vc: has ? '#eef2fa' : '#6b7590', lc: o ? '#f3f6fc' : '#7d89a3', dot: has ? '#eef3ff' : 'rgba(188,208,255,.2)', glow: has ? '0 0 10px 2px rgba(190,210,255,.8)' : 'none', cursor: 'pointer', open: o,
+          onClick: () => this.setState({ netOpen: o ? null : si }), onEnter: () => this.hl(has ? 'tool' + v : null), onLeave: () => this.hl(null),
+          tools: TOOLS.map((t, ti) => { const on = v === ti; return { label: t, bc: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.09)' : 'transparent', fc: on ? '#f3f6fc' : '#98a2b8', onClick: e => this.setNet(si, ti, e.currentTarget) }; })
+        };
+      }),
+
+      showInsight: inRange && ready[s] && (s !== 5 || st.bIntro >= 2),
+      insight: inRange ? INS[s].map(([t, i]) => ({ t, c: i ? '#9aa4ba' : '#eef2fa', fs: i ? 'italic' : 'normal' })) : [],
+      showUnlock: s === 1 && ready[s] && !st.keys[k],
+      unlockLabel: inRange ? `Unlock key 0${s} · get your ${['', 'opportunity prompt', 'extraction prompt', 'brain structure', 'workflow canvas', 'constraints prompt', 'architecture canvas'][s]}` : '',
+      unlock: () => this.unlock(k),
+      showArtifact: inRange && !!st.keys[k], art,
+
+      assembled: [
+        ['Signal', sel.length ? (this.sigLabels()[0] + (sel.length > 1 ? `  +${sel.length - 1}` : '')) : '—'],
+        ['Memory', `${srcs.length} sources — ${srcs.slice(0, 3).join(', ')}${srcs.length > 3 ? '…' : ''}`],
+        ['Structure', `${Object.keys(st.sorted).length} fragments in ${cnt.filter(Boolean).length} areas`],
+        ['Synapse', this.actTxt() || '—'],
+        ['Boundary', `${hum.length} human checkpoint${hum.length === 1 ? '' : 's'} · ${blk.length} bridged`],
+        ['Network', this.netPath()],
+        ['Action', 'Dormant']].map(([n, v], i) => ({ n, v, delay: (0.5 + i * 0.1).toFixed(2) + 's', lc: st.keys[i] ? '#c9d3ea' : '#6b7590', vc: st.keys[i] ? '#e8ecf4' : '#6b7590', dot: st.keys[i] ? '#eef3ff' : 'rgba(188,208,255,.25)', glow: st.keys[i] ? '0 0 8px 2px rgba(190,210,255,.7)' : 'none' })),
+      holdStart: e => this.holdStart(e), holdEnd: () => this.holdEnd(), noMenu: e => e.preventDefault(),
+      holdKey: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.awaken(); } },
+      chargePct: Math.round(st.charge * 100) + '%', chargeGlow: `0 0 ${Math.round(20 + st.charge * 60)}px rgba(150,180,255,${(0.1 + st.charge * 0.4).toFixed(2)})`,
+
+      fin1: st.fin >= 1, fin2: st.fin >= 2, fin3: st.fin >= 3,
+      summary: [
+        ['Knowledge Sources', `${srcs.length} connected`],
+        ['First Workflow', (st.wf.name || '').trim() ? (st.wf.name || '').trim() : this.actTxt() || '—'],
+        ['AI Action', st.wf.action || (this.actTxt() || '—')],
+        ['Human Checkpoint', hum.length ? hum[0].x.t : (st.wf.validation || 'Final approval')],
+        ['Environment', this.netPath()],
+        ['Next Experiment', 'Ready']].map(([k2, v], i) => ({ k: k2, v, delay: (0.2 + i * 0.12).toFixed(2) + 's' })),
+      bpSections: st.fin >= 3 ? this.bpSections().map((b, i) => ({ no: '0' + (i + 1), t: b.t, d: b.d, lines: b.lines.map(t => ({ t })), delay: (0.3 + i * 0.1).toFixed(2) + 's', span: i === 6 ? '1 / -1' : 'auto', bc: i === 6 ? 'rgba(222,231,255,.4)' : 'rgba(188,208,255,.12)', nc: i === 6 ? '#bcd0ff' : '#5f6a82' })) : [],
+      copyBp: () => this.copy('bp', this.bpMarkdown()), copyBpLabel: st.copied === 'bp' ? 'Copied' : 'Copy blueprint',
+      exportBp: () => { const b = new Blob([this.bpMarkdown()], { type: 'text/markdown' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'my-ai-work-brain-blueprint.md'; document.body.appendChild(a); a.click(); a.remove(); },
+      saveBp: () => { try { localStorage.setItem('hidden-brain-blueprint', this.bpMarkdown()); } catch (e) { } this.setState({ saved: true }); },
+      saveLabel: st.saved ? 'Saved in this browser' : 'Save',
+      toolkit: st.fin >= 3 ? this.toolkitData().map(([name, purpose, expl, text], i) => ({ no: '0' + (i + 1), name, purpose, expl, text, open: st.openCard === i, span: st.openCard === i ? '1 / -1' : 'auto', delay: (0.2 + i * 0.08).toFixed(2) + 's', toggleLabel: st.openCard === i ? 'Hide' : 'Read', onToggle: () => this.setState({ openCard: st.openCard === i ? null : i }), copyLabel: st.copied === 'tk' + i ? 'Copied' : 'Copy', onCopy: () => this.copy('tk' + i, text) })) : [],
+
+      showDrawer: s >= 1 && !st.reading, drawerOpen: st.drawer, drawerX: st.drawer ? '0px' : '300px', drawerChevron: st.drawer ? '›' : '‹',
+      toggleDrawer: () => this.setState({ drawer: !st.drawer, solo: null }),
+      tabDots: LAYERS.map(l => { const on = st.reached >= l.L && !st.hidden.includes(l.L); return { bg: on ? '#eef3ff' : 'rgba(188,208,255,.18)', glow: on ? '0 0 6px 1px rgba(190,210,255,.6)' : 'none' }; }),
+      layerRows: (() => {
+        const sw = [
+          ['#dfe6f5'], ['#bcd0ff'],
+          chroma ? [`conic-gradient(${AREA_RGB.map(rgb).join(',')},${rgb(AREA_RGB[0])})`] : ['#dfe6f5'],
+          ['#eef3ff'], [`conic-gradient(rgb(232,239,255),rgb(140,196,255),rgb(236,214,170),rgb(240,98,86),rgb(232,239,255))`], ['#cddcff']];
+        const wfN = WF.filter(w => st.wf[w.k]).length, bN = Object.keys(st.bounds).length, tN = new Set(this.netTools()).size;
+        const cnts = [`${sel.length}`, `${st.sources.length}`, `${Object.keys(st.sorted).length}/8`, `${wfN}/${WF.length}`, `${bN}/6`, `${tN}`];
+        return LAYERS.map((l, i) => {
+          const av = st.reached >= l.L, on = av && !st.hidden.includes(l.L), solo = st.solo === l.L;
+          return {
+            n: l.n, d: av ? l.d : 'Not formed yet', cnt: av ? cnts[i] : '', sw: sw[i][0], glow: on ? '0 0 10px 1px rgba(190,210,255,.45)' : 'none',
+            op: av ? (on ? 1 : 0.55) : 0.3, nc: solo ? '#ffffff' : '#e8ecf4', rowBg: solo ? 'rgba(188,208,255,.05)' : 'transparent',
+            on, tb: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.2)', tbg: on ? 'rgba(188,208,255,.22)' : 'transparent', kx: on ? '15px' : '2px', kc: on ? '#f3f6fc' : '#5f6a82', cursor: av ? 'pointer' : 'default', disabled: !av,
+            onToggle: () => { if (!av) return; this.setState({ hidden: on ? [...st.hidden, l.L] : st.hidden.filter(x => x !== l.L), solo: null }); },
+            onEnter: () => { if (on) this.setState({ solo: l.L }); }, onLeave: () => this.setState({ solo: null })
+          };
+        });
+      })(),
+      namesOn: st.names, namesTb: st.names ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.2)', namesTbg: st.names ? 'rgba(188,208,255,.22)' : 'transparent', namesKx: st.names ? '15px' : '2px', namesKc: st.names ? '#f3f6fc' : '#5f6a82',
+      toggleNames: () => this.setState({ names: !st.names }),
+      showAll: () => this.setState({ hidden: [] }), hideAll: () => this.setState({ hidden: [1, 2, 3, 4, 5, 6] }),
+      year: '2026', authorName: this.props.authorName || 'Your Name', authorEmail: this.props.authorEmail || 'you@email.com',
+      mailHref: 'mailto:' + (this.props.authorEmail || 'you@email.com'), linkedinHref: this.props.linkedinUrl || 'https://www.linkedin.com/',
+      showMap: s >= 1 && !st.reading,
+      mapDots: KEYS.map((n, i) => {
+        const on = st.keys[i], here = camS - 1 === i, can = i + 1 <= st.reached && !here;
+        return { title: `0${i + 1} — ${n}`, x: (32 + Math.cos(KA(i)) * 24).toFixed(1) + 'px', y: (32 + Math.sin(KA(i)) * 24).toFixed(1) + 'px', size: here ? '9px' : (on ? '6px' : '5px'), bg: on ? '#eef3ff' : (here ? 'rgba(236,242,255,.35)' : 'transparent'), bd: here ? 'rgba(236,242,255,.9)' : (on ? 'rgba(236,242,255,.6)' : 'rgba(188,208,255,.25)'), glow: on ? '0 0 10px 2px rgba(190,210,255,.7)' : 'none', cursor: can ? 'pointer' : 'default', onClick: () => { if (can) this.goTo(i + 1); } };
+      }),
+      mapLabel: camS >= 1 ? `0${camS} — ${KEYS[camS - 1]}` : '',
+      noPrev: s <= 1 || T, noNext: s >= st.reached || T,
+      prevBc: s > 1 ? 'rgba(188,208,255,.28)' : 'rgba(188,208,255,.08)', prevFc: s > 1 ? '#c9d3ea' : '#3a4256', prevCur: s > 1 ? 'pointer' : 'default',
+      nextBc: s < st.reached ? 'rgba(188,208,255,.28)' : 'rgba(188,208,255,.08)', nextFc: s < st.reached ? '#c9d3ea' : '#3a4256', nextCur: s < st.reached ? 'pointer' : 'default',
+      fwd: () => { if (s < st.reached) this.goTo(s + 1); },
+      canBack: s > 1 && !T, backLabel: s > 1 ? STAGES[s - 2] : '', back: () => this.goTo(s - 1)
+    };
+  }
+}
+</script>
+</body>
+</html>
