@@ -10,9 +10,11 @@
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Hidden Brain</title>
-<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#04060b"/><circle cx="50" cy="50" r="20" fill="none" stroke="#bcd0ff" stroke-width="1.5"/><circle cx="50" cy="50" r="5" fill="#eef3ff"/></svg></template>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg"></link>
+<meta name="theme-color" content="#05070c">
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#04060b"></rect><circle cx="50" cy="50" r="20" fill="none" stroke="#bcd0ff" stroke-width="1.5"></circle><circle cx="50" cy="50" r="5" fill="#eef3ff"></circle></svg></template>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@300;400;500&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;background:#04060b;color:#e8ecf4;overflow:hidden;-webkit-font-smoothing:antialiased}
 *{box-sizing:border-box}
@@ -46,12 +48,12 @@ input::placeholder{color:#5d6780}
   <div style="position:absolute;top:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;z-index:6;pointer-events:none">
     <div style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.28em;color:#5f6a82;text-transform:uppercase">The Hidden Brain</div>
     <div role="toolbar" aria-label="Experience controls" style="pointer-events:auto;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;border:1px solid rgba(188,208,255,.14);background:rgba(8,12,21,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
-      <button onClick="{{ togglePause }}" aria-label="{{ pauseAria }}" title="{{ pauseAria }}" aria-pressed="{{ pausedOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ pauseBg }};color:{{ pauseFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ pausedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg></sc-if><sc-if value="{{ playingOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg></sc-if></button>
-      <button onClick="{{ toggleMute }}" aria-label="{{ soundAria }}" title="{{ soundAria }}" aria-pressed="{{ mutedOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ soundBg }};color:{{ soundFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ soundOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/></svg></sc-if><sc-if value="{{ mutedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 6l3.5 4M14.5 6L11 10"/></svg></sc-if></button>
+      <button onClick="{{ cycleMotion }}" aria-label="{{ motionAria }}" title="{{ motionAria }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ pauseBg }};color:{{ pauseFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ motionRegular }}" hint-placeholder-val="{{ true }}"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><mask id="hbmRb"><rect width="16" height="16" fill="white"></rect><circle cx="8" cy="8" r="5.5" fill="black"></circle></mask><circle cx="5.5" cy="10.5" r="4.6" fill="currentColor" mask="url(#hbmRb)" opacity=".85"></circle><mask id="hbmRa"><rect width="16" height="16" fill="white"></rect><circle cx="10.5" cy="5.5" r="5.5" fill="black"></circle></mask><circle cx="8" cy="8" r="4.6" fill="currentColor" mask="url(#hbmRa)"></circle><circle cx="10.5" cy="5.5" r="4.6" fill="currentColor"></circle></svg></sc-if><sc-if value="{{ motionSlow }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><mask id="hbmSa"><rect width="16" height="16" fill="white"></rect><circle cx="10.5" cy="5.5" r="5.5" fill="black"></circle></mask><circle cx="8" cy="8" r="4.6" fill="currentColor" mask="url(#hbmSa)"></circle><circle cx="10.5" cy="5.5" r="4.6" fill="currentColor"></circle></svg></sc-if><sc-if value="{{ motionStatic }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="4.6" fill="currentColor"></circle></svg></sc-if></button>
+      <button onClick="{{ toggleMute }}" aria-label="{{ soundAria }}" title="{{ soundAria }}" aria-pressed="{{ mutedOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ soundBg }};color:{{ soundFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><sc-if value="{{ soundOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"></path><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"></path></svg></sc-if><sc-if value="{{ mutedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"></path><path d="M11 6l3.5 4M14.5 6L11 10"></path></svg></sc-if></button>
       <span style="width:1px;height:18px;background:rgba(188,208,255,.14);margin:0 4px"></span>
-      <button onClick="{{ toggleReading }}" aria-label="{{ readAria }}" title="{{ readAria }}" aria-pressed="{{ readingOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ readBg }};color:{{ readFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M9.5 2.5V5H12M6 8h4M6 10.5h4"/></svg></button>
+      <button onClick="{{ toggleReading }}" aria-label="{{ readAria }}" title="{{ readAria }}" aria-pressed="{{ readingOn }}" style="width:36px;height:36px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ readBg }};color:{{ readFc }};cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"></path><path d="M9.5 2.5V5H12M6 8h4M6 10.5h4"></path></svg></button>
       <sc-if value="{{ showRestartTop }}" hint-placeholder-val="{{ false }}">
-        <span style="display:flex;align-items:center;gap:2px"><span style="width:1px;height:18px;background:rgba(188,208,255,.14);margin:0 4px"></span><button onClick="{{ restart }}" aria-label="Start over" title="Start over" style="height:36px;border-radius:999px;border:0;padding:0 14px 0 10px;display:flex;align-items:center;gap:8px;background:transparent;color:#98a2b8;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"/><path d="M3 2.5v2.5h2.5"/></svg><span>Start over</span></button></span>
+        <span style="display:flex;align-items:center;gap:2px"><span style="width:1px;height:18px;background:rgba(188,208,255,.14);margin:0 4px"></span><button onClick="{{ restart }}" aria-label="Start over" title="Start over" style="height:36px;border-radius:999px;border:0;padding:0 14px 0 10px;display:flex;align-items:center;gap:8px;background:transparent;color:#98a2b8;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .3s ease,color .3s ease" style-hover="background:rgba(188,208,255,.12);color:#ffffff"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"></path><path d="M3 2.5v2.5h2.5"></path></svg><span>Start over</span></button></span>
       </sc-if>
     </div>
   </div>
@@ -61,14 +63,14 @@ input::placeholder{color:#5d6780}
     <header style="position:absolute;top:0;left:0;right:0;z-index:8;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(4,6,11,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(188,208,255,.08)">
       <div style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.26em;color:#7d89a3;text-transform:uppercase;white-space:nowrap">The Hidden Brain</div>
       <div role="toolbar" aria-label="Experience controls" style="position:relative;display:flex;align-items:center;gap:2px">
-        <button onClick="{{ toggleMute }}" aria-label="{{ soundAria }}" aria-pressed="{{ mutedOn }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:{{ soundFc }};cursor:pointer"><sc-if value="{{ soundOn }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/></svg></sc-if><sc-if value="{{ mutedOn }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"/><path d="M11 6l3.5 4M14.5 6L11 10"/></svg></sc-if></button>
-        <button onClick="{{ toggleReading }}" aria-label="{{ readAria }}" aria-pressed="{{ readingOn }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ readBg }};color:{{ readFc }};cursor:pointer"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M9.5 2.5V5H12M6 8h4M6 10.5h4"/></svg></button>
+        <button onClick="{{ toggleMute }}" aria-label="{{ soundAria }}" aria-pressed="{{ mutedOn }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:{{ soundFc }};cursor:pointer"><sc-if value="{{ soundOn }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"></path><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"></path></svg></sc-if><sc-if value="{{ mutedOn }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6v4h2.5l3.5 3V3L5 6z"></path><path d="M11 6l3.5 4M14.5 6L11 10"></path></svg></sc-if></button>
+        <button onClick="{{ toggleReading }}" aria-label="{{ readAria }}" aria-pressed="{{ readingOn }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ readBg }};color:{{ readFc }};cursor:pointer"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"></path><path d="M9.5 2.5V5H12M6 8h4M6 10.5h4"></path></svg></button>
         <button onClick="{{ toggleMore }}" aria-label="More controls" aria-expanded="{{ moreOpen }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:{{ moreBg }};color:#c9d3ea;cursor:pointer;font-size:18px;letter-spacing:.05em;line-height:1">⋯</button>
         <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
           <div role="menu" style="position:absolute;top:50px;right:0;min-width:210px;padding:6px;border-radius:14px;border:1px solid rgba(188,208,255,.14);background:rgba(8,12,21,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 16px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px;animation:hbIn .3s ease both">
-            <button role="menuitem" onClick="{{ menuPause }}" style="height:44px;border:0;border-radius:10px;padding:0 14px;display:flex;align-items:center;gap:12px;background:transparent;color:#d5dbe8;font-size:14px;text-align:left;cursor:pointer" style-hover="background:rgba(188,208,255,.08)"><sc-if value="{{ pausedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg></sc-if><sc-if value="{{ playingOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg></sc-if><span>{{ pauseMenuLabel }}</span></button>
+            <button role="menuitem" onClick="{{ menuPause }}" style="height:44px;border:0;border-radius:10px;padding:0 14px;display:flex;align-items:center;gap:12px;background:transparent;color:#d5dbe8;font-size:14px;text-align:left;cursor:pointer" style-hover="background:rgba(188,208,255,.08)"><sc-if value="{{ pausedOn }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"></path></svg></sc-if><sc-if value="{{ playingOn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"></path></svg></sc-if><span>{{ pauseMenuLabel }}</span></button>
             <sc-if value="{{ showRestartTop }}" hint-placeholder-val="{{ false }}">
-              <button role="menuitem" onClick="{{ menuRestart }}" style="height:44px;border:0;border-radius:10px;padding:0 14px;display:flex;align-items:center;gap:12px;background:transparent;color:#d5dbe8;font-size:14px;text-align:left;cursor:pointer" style-hover="background:rgba(188,208,255,.08)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"/><path d="M3 2.5v2.5h2.5"/></svg><span>Start over</span></button>
+              <button role="menuitem" onClick="{{ menuRestart }}" style="height:44px;border:0;border-radius:10px;padding:0 14px;display:flex;align-items:center;gap:12px;background:transparent;color:#d5dbe8;font-size:14px;text-align:left;cursor:pointer" style-hover="background:rgba(188,208,255,.08)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"></path><path d="M3 2.5v2.5h2.5"></path></svg><span>Start over</span></button>
             </sc-if>
           </div>
         </sc-if>
@@ -505,8 +507,19 @@ input::placeholder{color:#5d6780}
             </div>
           </sc-if>
           <sc-if value="{{ fin3 }}" hint-placeholder-val="{{ false }}">
-            <div style="max-width:1180px;margin-top:120px">
-              <div style="display:flex;align-items:center;gap:16px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both"><span>Your deliverables</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.25),rgba(188,208,255,0))"></span></div>
+            <div style="max-width:1180px;margin-top:88px">
+              <form onSubmit="{{ sendMail }}" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 28px;padding:22px 24px;border-radius:18px;border:1px solid rgba(222,231,255,.28);background:linear-gradient(120deg,rgba(28,38,64,.72),rgba(10,14,24,.78));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 0 40px rgba(120,150,240,.08);animation:hbIn 1.2s ease both">
+                <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:6px">
+                  <label for="hb-mail" style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.15;color:#f3f6fc">Send the whole thing to your inbox</label>
+                  <span style="font-size:13.5px;line-height:1.5;color:{{ mailNoteFc }}">{{ mailNote }}</span>
+                </div>
+                <div style="flex:1 1 360px;max-width:480px;display:flex;flex-wrap:wrap;gap:8px">
+                  <input id="hb-mail" type="email" required="{{ true }}" autoComplete="email" placeholder="you@company.com" value="{{ mailVal }}" onChange="{{ onMail }}" style="flex:1 1 200px;min-width:0;height:46px;padding:0 16px;border-radius:999px;border:1px solid rgba(188,208,255,.22);background:rgba(4,6,11,.6);color:#f3f6fc;font-size:15px;outline:none" style-focus="border-color:rgba(222,231,255,.6)">
+                  <button type="submit" disabled="{{ mailBusy }}" style="flex:none;height:46px;padding:0 22px;border-radius:999px;border:1px solid #eef3ff;background:#eef3ff;color:#05070c;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all .3s ease" style-hover="background:#ffffff;box-shadow:0 0 18px rgba(190,210,255,.5)">{{ mailSendLabel }}</button>
+                </div>
+              </form>
+
+              <div style="margin-top:72px;display:flex;align-items:center;gap:16px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3;animation:hbIn 1.2s ease both"><span>Your deliverables</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.25),rgba(188,208,255,0))"></span></div>
 
               <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:34px;animation:hbIn 1.4s .1s ease both">
                 <div>
@@ -514,26 +527,11 @@ input::placeholder{color:#5d6780}
                   <div style="font-family:'Instrument Serif',serif;font-size:clamp(38px,4vw,56px);line-height:1;color:#f3f6fc;margin-top:10px">My AI Work Brain Blueprint</div>
                   <div style="font-size:15px;line-height:1.55;color:#8e98ad;margin-top:10px;max-width:34em">Seven decisions, one page. Everything you chose on the journey.</div>
                 </div>
-                <div style="display:flex;flex-wrap:wrap;gap:8px">
-                  <button onClick="{{ copyBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(222,231,255,.5);background:rgba(188,208,255,.08);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">{{ copyBpLabel }}</button>
-                  <button onClick="{{ exportBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:transparent;color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">Export .md</button>
-                  <button onClick="{{ openMail }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:{{ mailBtnBg }};color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">{{ mailBtnLabel }}</button>
-                </div>
-                <sc-if value="{{ mailFormOpen }}" hint-placeholder-val="{{ false }}">
-                  <form onSubmit="{{ sendMail }}" style="margin-top:16px;max-width:520px;padding:20px;border-radius:18px;border:1px solid rgba(188,208,255,.14);background:rgba(10,14,24,.7);display:flex;flex-direction:column;gap:12px;animation:hbIn .4s ease both">
-                    <label for="hb-mail" style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#7d89a3">Send my blueprint to</label>
-                    <div style="display:flex;flex-wrap:wrap;gap:8px">
-                      <input id="hb-mail" type="email" required="{{ true }}" autoComplete="email" placeholder="you@company.com" value="{{ mailVal }}" onChange="{{ onMail }}" style="flex:1 1 220px;min-width:0;height:46px;padding:0 16px;border-radius:999px;border:1px solid rgba(188,208,255,.22);background:rgba(4,6,11,.6);color:#f3f6fc;font-size:15px;outline:none" style-focus="border-color:rgba(222,231,255,.6)"></input>
-                      <button type="submit" disabled="{{ mailBusy }}" style="flex:none;height:46px;padding:0 20px;border-radius:999px;border:1px solid rgba(222,231,255,.5);background:rgba(188,208,255,.1);color:#f3f6fc;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer">{{ mailSendLabel }}</button>
-                    </div>
-                    <span style="font-size:13px;line-height:1.5;color:{{ mailNoteFc }}">{{ mailNote }}</span>
-                  </form>
-                </sc-if>
               </div>
 
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px;margin-top:30px;align-items:stretch">
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));grid-auto-flow:row dense;gap:14px;margin-top:30px;align-items:stretch">
                 <sc-for list="{{ bpSections }}" as="b" hint-placeholder-count="7">
-                  <div style="grid-column:{{ b.span }};display:flex;flex-direction:column;padding:24px 24px 22px;background:rgba(8,12,21,.78);border:1px solid rgba(188,208,255,.12);border-radius:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:{{ b.bc }};animation:hbIn 1.1s ease both;animation-delay:{{ b.delay }}">
+                  <div style="grid-column:{{ b.span }};grid-row:{{ b.rspan }};order:{{ b.ord }};display:flex;flex-direction:column;padding:{{ b.pad }};background:rgba(8,12,21,.78);border:1px solid rgba(188,208,255,.12);border-radius:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:{{ b.bc }};animation:hbIn 1.1s ease both;animation-delay:{{ b.delay }}">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
                       <span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;color:{{ b.nc }}">{{ b.no }}</span>
                       <span style="width:6px;height:6px;border-radius:50%;background:#eef3ff;box-shadow:0 0 10px 2px rgba(190,210,255,.7)"></span>
@@ -542,11 +540,17 @@ input::placeholder{color:#5d6780}
                     <div style="font-size:13px;line-height:1.45;color:#6b7590;margin-top:6px">{{ b.d }}</div>
                     <div style="display:flex;flex-direction:column;margin-top:16px;border-top:1px solid rgba(188,208,255,.08)">
                       <sc-for list="{{ b.lines }}" as="l" hint-placeholder-count="2">
-                        <div style="font-size:14px;line-height:1.5;color:#c9d0de;padding:9px 0;border-bottom:1px solid rgba(188,208,255,.06);text-wrap:pretty">{{ l.t }}</div>
+                        <div style="font-size:{{ b.lfs }};line-height:{{ b.llh }};color:{{ b.lfc }};padding:9px 0;border-bottom:1px solid rgba(188,208,255,.06);text-wrap:pretty;white-space:pre-line">{{ l.t }}</div>
                       </sc-for>
                     </div>
                   </div>
                 </sc-for>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px">
+                <span style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#5f6a82;margin-right:6px">Or keep a copy</span>
+                <button onClick="{{ copyBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:transparent;color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">{{ copyBpLabel }}</button>
+                <button onClick="{{ exportBp }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.2);background:transparent;color:#c9d3ea;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .4s ease" style-hover="background:rgba(188,208,255,.12);border-color:rgba(222,231,255,.55)">Export .md</button>
               </div>
 
               <div style="margin-top:120px;display:flex;align-items:center;gap:16px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7d89a3"><span>Seven prompts, earned</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(188,208,255,.25),rgba(188,208,255,0))"></span></div>
@@ -578,7 +582,7 @@ input::placeholder{color:#5d6780}
 
               <div style="margin-top:140px;padding-top:44px;border-top:1px solid rgba(188,208,255,.1);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px">
                 <div>
-                  <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:34px;line-height:1.2;color:#eef2fa;max-width:14em">From a system of reference to a system of action.</div>
+                  <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:34px;line-height:1.2;color:#eef2fa;max-width:14em">From a system of reference<br>to a system of action.</div>
                   <div style="margin-top:18px;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#5f6a82">What do you know that your tools don’t?</div>
                 </div>
                 <button onClick="{{ restart }}" style="padding:12px 18px;border-radius:999px;border:1px solid rgba(188,208,255,.14);background:transparent;color:#7d89a3;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer" style-hover="color:#e8ecf4">Restart the quest</button>
@@ -658,7 +662,8 @@ input::placeholder{color:#5d6780}
   </sc-if>
 
   <sc-if value="{{ showMap }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;right:24px;bottom:22px;display:flex;flex-direction:row-reverse;align-items:center;gap:16px;z-index:6;text-align:right;animation:hbIn 1.6s ease both">
+    <div aria-hidden="true" style="position:absolute;right:0;bottom:0;width:min(560px,60vw);height:150px;z-index:39;pointer-events:none;background:radial-gradient(120% 100% at 100% 100%,rgba(4,6,11,.94) 0%,rgba(4,6,11,.7) 45%,rgba(4,6,11,0) 100%)"></div>
+    <div style="position:absolute;right:24px;bottom:22px;display:flex;flex-direction:row-reverse;align-items:center;gap:16px;z-index:40;text-align:right;animation:hbIn 1.6s ease both">
       <div style="display:flex;flex-direction:row-reverse;align-items:center;gap:12px">
       <div style="display:flex;flex-direction:column;gap:6px">
         <button onClick="{{ back }}" disabled="{{ noPrev }}" aria-label="Previous step" title="Previous step" style="width:28px;height:28px;border-radius:50%;border:1px solid {{ prevBc }};background:rgba(6,9,16,.6);color:{{ prevFc }};font-family:'Geist Mono',monospace;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;cursor:{{ prevCur }};transition:all .4s ease" style-hover="border-color:rgba(222,231,255,.55);color:#ffffff">↑</button>
@@ -709,7 +714,7 @@ input::placeholder{color:#5d6780}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;pace&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cinematic&quot;,&quot;brisk&quot;],&quot;default&quot;:&quot;brisk&quot;,&quot;tsType&quot;:&quot;'cinematic' | 'brisk'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;horizon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;chroma&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;authorName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Natalie Label&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;authorEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;labeldn@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;linkedinUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://www.linkedin.com/in/labelnatalie/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;mailEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Email capture&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;pace&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cinematic&quot;,&quot;brisk&quot;],&quot;default&quot;:&quot;brisk&quot;,&quot;tsType&quot;:&quot;'cinematic' | 'brisk'&quot;,&quot;section&quot;:&quot;Experience&quot;},&quot;horizon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;chroma&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;authorName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Natalie Label&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;authorEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;labeldn@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;linkedinUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://www.linkedin.com/in/labelnatalie/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Credit&quot;},&quot;mailEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://script.google.com/macros/s/AKfycbyT2j5w7ZCuq8O_zbkSJRHyLzQq6tyNb4uyUC52OeDh-CWQGDGIBin6EzPJynOXe_hv/exec&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Email capture&quot;}}">
 const LS = 'hidden-brain-v1';
 const TAU = Math.PI * 2;
 const KA = k => -Math.PI / 2 + k * TAU / 7;
@@ -767,7 +772,7 @@ const NET = [{ k: 'source', n: 'Source', d: 'Where knowledge originates.' }, { k
 const NET_KEYS = ['source', 'reasoning', 'action', 'validation', 'destination'];
 const LAYER_OF = id => id.startsWith('sig') ? 1 : id.startsWith('src') ? 2 : (id.startsWith('area') || id.startsWith('frag')) ? 3 : (id === 'know' || id === 'do' || id.startsWith('wf')) ? 4 : (id === 'ext' || id.startsWith('conn') || id.startsWith('br')) ? 5 : id.startsWith('tool') ? 6 : 0;
 const LAYERS = [{ L: 1, n: 'Signals', d: 'Repetition you noticed' }, { L: 2, n: 'Memory', d: 'Where knowledge lives' }, { L: 3, n: 'Structure', d: 'Six areas, sorted fragments' }, { L: 4, n: 'Synapse', d: 'Know → Do workflow' }, { L: 5, n: 'Boundaries', d: 'Rules for each connection' }, { L: 6, n: 'Network', d: 'Tools knowledge flows through' }];
-const INIT = { part2: false, focus: null, paused: false, wfName: '', muted: false, reading: false, hidden: [], names: false, stage: 0, reached: 0, intro: 0, keys: [0, 0, 0, 0, 0, 0, 0], signals: [], custom: '', customOn: false, sources: [], sorted: {}, action: [], wf: {}, wfOpen: null, bounds: {}, bIntro: 0, move: null, net: {}, netOpen: null, awake: false, fin: 0, brainOpen: false };
+const INIT = { part2: false, focus: null, paused: false, slowMo: false, wfName: '', muted: false, reading: false, hidden: [], names: false, stage: 0, reached: 0, intro: 0, keys: [0, 0, 0, 0, 0, 0, 0], signals: [], custom: '', customOn: false, sources: [], sorted: {}, action: [], wf: {}, wfOpen: null, bounds: {}, bIntro: 0, move: null, net: {}, netOpen: null, awake: false, fin: 0, brainOpen: false };
 const TRANSIENT = { arriving: false, wfDraft: {}, drawer: false, solo: null, lastSort: null, transit: false, transitTo: null, copied: null, charge: 0, openCard: null, saved: false, moreOpen: false, mailOpen: false, mailStatus: null, brainAway: false, brainPeek: false };
 
 const P1 = `I want to identify opportunities for AI-assisted workflows in my team.
@@ -1039,9 +1044,9 @@ class Component extends DCLogic {
     }
 
     if (!aw) W.trot = cam === 0 ? 0 : -(Math.min(cam, 7) - 1) * TAU / 7;
-    const res = aw && st.fin >= 3 && cam === 7; W.res = res;
-    W.tzoom = res ? (st.narrow ? 0.42 : 0.36) : (aw && cam === 7) ? 0.74 : cam === 0 ? 1.25 : cam === 7 ? 0.88 : 1;
-    W.tax = res ? (st.narrow ? 0.5 : 0.86) : st.narrow ? 0.5 : (cam === 0 ? 0.5 : 0.69); W.tay = res ? (st.narrow ? 0.15 : 0.24) : st.narrow && cam > 0 ? (st.brainPeek ? 0.44 : 0.27) : 0.52;
+    const res = aw && st.fin >= 3 && cam === 7; W.res = res; if (W.cam !== cam) W.exp = {}; W.cam = cam;
+    W.tzoom = res ? (st.narrow ? 0.42 : 0.62) : (aw && cam === 7) ? 0.74 : cam === 0 ? 1.25 : cam === 7 ? 0.88 : 1;
+    W.tax = res ? (st.narrow ? 0.5 : 0.8) : st.narrow ? 0.5 : (cam === 0 ? 0.5 : 0.69); W.tay = res ? (st.narrow ? 0.15 : 0.3) : st.narrow && cam > 0 ? (st.brainPeek ? 0.44 : 0.27) : 0.52;
     if (st.narrow && st.brainPeek && !res) W.tzoom *= 1.15;
     W.tglow = 0.06 + kn * 0.09 + (aw ? 0.3 : 0) + st.charge * 0.35;
     W.tarc = kn === 7 ? TAU : kn ? (kn - 1) * TAU / 7 + 0.2 : 0;
@@ -1069,7 +1074,7 @@ class Component extends DCLogic {
 
   frame(ts) {
     const W = this.W, ctx = this.ctx; if (!ctx || !this.cw || this.state.reading) return;
-    const dtr = Math.min(0.05, W.last ? (ts - W.last) / 1000 : 0.016), dt = this.state.paused ? 0 : dtr; W.last = ts; W.t += dt;
+    const dtr = Math.min(0.05, W.last ? (ts - W.last) / 1000 : 0.016), dt = this.state.paused ? 0 : this.state.slowMo ? dtr * 0.35 : dtr; W.last = ts; W.t += dt;
     const w = this.cw, h = this.ch, R = this.reduced, dpr = this.dpr;
     const k = 1 - Math.exp(-dtr * (R || this.state.paused ? 6 : 1.5));
     if (W.awake && !R && !W.narrow) W.trot -= dt * 0.022;
@@ -1122,7 +1127,8 @@ class Component extends DCLogic {
       if (n.jit && !R && !W.narrow) { tx += Math.sin(W.t * 0.7 + n.ph) * n.jit; ty += Math.cos(W.t * 0.53 + n.ph * 1.3) * n.jit; }
       n.x += (tx - n.x) * k * 0.8; n.y += (ty - n.y) * k * 0.8;
       n.a += (n.ta - n.a) * k; n.r += (n.tr - n.r) * k;
-      const tv = W.hidden && W.hidden.includes(n.L) ? 0 : (W.solo != null && n.L && n.L !== W.solo ? 0.12 : 1); n.vis += (tv - n.vis) * Math.min(1, k * 2.2);
+      const fold = W.cam >= 1 && !W.res && n.L && n.L !== W.cam && !(W.exp && W.exp[n.L]) && W.solo !== n.L;
+      const tv = fold ? 0 : (W.res && !W.narrow) ? ((n.core || id.startsWith('area')) ? 1 : 0) : W.hidden && W.hidden.includes(n.L) ? 0 : (W.solo != null && n.L && n.L !== W.solo ? 0.12 : 1); n.vis += (tv - n.vis) * Math.min(1, k * 2.2);
       for (let c = 0; c < 3; c++) n.col[c] += (n.tcol[c] - n.col[c]) * k;
       if (!n.live && n.a < 0.01) { delete W.nodes[id]; continue; }
       const p = this.proj(n.x, n.y); n.sx = p[0]; n.sy = p[1];
@@ -1173,6 +1179,14 @@ class Component extends DCLogic {
       for (let j = 1; j <= 8; j++) { const t = j / 8 * reach; const off = j === 8 && reach >= 1 ? 0 : (Math.random() - 0.5) * 12 * Math.sin(Math.PI * t); ctx.lineTo(A.sx + dx * t + px * off, A.sy + dy * t + py * off); }
       ctx.stroke();
     }
+    // group counts for folded layers
+    const gc = {}; if (W.cam >= 1 && !W.res) for (const id in W.nodes) { const n = W.nodes[id]; if (n.live && n.L && n.L !== W.cam && !(W.exp && W.exp[n.L]) && W.solo !== n.L) gc[n.L] = (gc[n.L] || 0) + 1; }
+    W.gc = gc;
+    for (const L in gc) {
+      const kn = W.nodes['key' + (L - 1)]; if (!kn || kn.a < 0.05) continue;
+      const hov = hv === kn.id, rg = 9 + Math.min(6, gc[L] * 0.4) + (hov ? 3 : 0);
+      ctx.strokeStyle = `rgba(200,215,255,${(hov ? 0.7 : 0.32) * kn.a})`; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.arc(kn.sx, kn.sy, rg, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    }
     // nodes draw
     ctx.font = '500 9.5px "Geist Mono", ui-monospace, monospace'; try { ctx.letterSpacing = '2px'; } catch (e) { }
     for (const id in W.nodes) {
@@ -1191,7 +1205,7 @@ class Component extends DCLogic {
       ctx.fillStyle = `rgba(${(c[0] + 255) / 2 | 0},${(c[1] + 255) / 2 | 0},${(c[2] + 255) / 2 | 0},${na})`; ctx.beginPath(); ctx.arc(n.sx, n.sy, Math.max(0.6, rr * 0.62), 0, TAU); ctx.fill();
       if (n.nm && (!W.narrow || id === hv)) {
         const la = W.narrow ? na * 0.95 : na * Math.max((!W.res && (n.lab || W.names || (n.L && W.solo === n.L))) ? 0.7 : 0, n.prox * 1.1);
-        if (la > 0.02 && n.sy > 78) { ctx.fillStyle = `rgba(${Math.min(255, c[0] + 20) | 0},${Math.min(255, c[1] + 20) | 0},${Math.min(255, c[2] + 20) | 0},${Math.min(1, la)})`; ctx.fillText(n.nm, n.sx + 9 + rr, n.sy + 3.5); }
+        if (la > 0.02 && n.sy > 78) { const gk = id.startsWith('key') && W.gc && W.gc[+id.slice(3) + 1]; ctx.fillStyle = `rgba(${Math.min(255, c[0] + 20) | 0},${Math.min(255, c[1] + 20) | 0},${Math.min(255, c[2] + 20) | 0},${Math.min(1, la)})`; const kx = id.startsWith('key') ? +id.slice(3) + 1 : 0, ex = kx && W.exp && W.exp[kx]; ctx.fillText(n.nm + (gk ? (id === hv ? '  +' + gk + ' · OPEN' : '  +' + gk) : (ex && id === hv ? '  · CLOSE' : '')), n.sx + 9 + rr + (gk ? 8 : 0), n.sy + 3.5); }
       }
     }
     // waves
@@ -1216,8 +1230,13 @@ class Component extends DCLogic {
     try { localStorage.setItem('hidden-brain-email', email); localStorage.setItem('hidden-brain-blueprint', blueprint); } catch (x) { }
     try {
       if (url) {
-        const payload = JSON.stringify({ email, _replyto: email, _subject: 'My AI Work Brain Blueprint', blueprint, submittedAt: new Date().toISOString(), page: location.href });
-        if (/script\.google\.com/.test(url)) await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: payload });
+        const payload = JSON.stringify({ email, _replyto: email, _subject: 'My AI Work Brain Blueprint', blueprint, sections: this.bpSections().map(s => ({ t: s.t, d: s.d, lines: s.lines })), prompts: this.toolkitData().map(p => ({ n: p[0], t: p[1], d: p[2], body: p[3] })), author: { name: this.props.authorName || '', linkedin: this.props.linkedinUrl || '', email: this.props.authorEmail || '' }, submittedAt: new Date().toISOString(), page: location.href.split('#')[0] });
+        if (/script\.google\.com/.test(url) && !/\/exec$/.test(url)) throw new Error('Use the Web app URL ending in /exec');
+        if (/script\.google\.com/.test(url)) {
+          const req = fetch(url, { method: 'POST', mode: 'no-cors', keepalive: payload.length < 60000, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: payload });
+          req.catch(() => this.setState({ mailStatus: 'error' }));
+          await new Promise(r => setTimeout(r, 450));
+        }
         else { const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: payload }); if (!r.ok) throw new Error(r.status); }
       } else await new Promise(r => setTimeout(r, 700));
       this.setState({ mailStatus: 'sent', saved: true });
@@ -1231,7 +1250,7 @@ class Component extends DCLogic {
   }
   goTo(s) {
     if (s === this.state.stage || this.state.transit) return;
-    this.setState({ transit: true, transitTo: s }); this.sfx('move');
+    this.setState({ transit: true, transitTo: s });
     this.W.waves.push({ t: 0, soft: true });
     this.later(() => {
       this.setState(st => ({ stage: s, arriving: true, reached: Math.max(st.reached, s), transit: false, transitTo: null, wfOpen: null, netOpen: null, brainAway: false, brainPeek: false }), () => {
@@ -1306,7 +1325,7 @@ class Component extends DCLogic {
     this.timers.forEach(clearTimeout); this.timers = [];
     try { localStorage.removeItem(LS); } catch (e) { }
     const W = this.W; W.nodes = {}; W.edges = {}; W.pulses = []; W.sparks = []; W.waves = []; W.rot = W.trot = 0;
-    this.setState(Object.assign(JSON.parse(JSON.stringify(INIT)), TRANSIENT, { muted: this.state.muted, reading: this.state.reading, paused: this.state.paused }), () => this.runIntro());
+    this.setState(Object.assign(JSON.parse(JSON.stringify(INIT)), TRANSIENT, { muted: this.state.muted, reading: this.state.reading, paused: this.state.paused, slowMo: this.state.slowMo }), () => this.runIntro());
   }
 
   // ---------- content ----------
@@ -1409,9 +1428,9 @@ Do not propose an entire AI platform.`;
     const bl = g.map(x => x.items.length ? `${x.c.n} — ${x.items.map(o => o.x.t + (x.c.k === 'blocked' ? ` (via ${BRIDGES[o.x.b].toLowerCase()})` : '')).join('; ')}` : null).filter(Boolean);
     return [
       { t: 'My Opportunity', d: 'The recurring problem I want to improve.', lines: this.sigLabels() },
-      { t: 'My Hidden Knowledge', d: 'Where the relevant intelligence currently lives.', lines: [this.srcLabels().join(', ')] },
+      { t: 'My Hidden Knowledge', d: 'Where the relevant intelligence currently lives.', lines: this.srcLabels() },
       { t: 'My Brain', d: 'How that knowledge should be structured.', lines: this.areaLines() },
-      { t: 'My First Workflow', d: 'Workflow → Trigger → Context → Knowledge → Action → Validation → Output → Next', lines: [].concat(st.focus != null ? [`Focus: ${ACTIONS[st.focus]}`] : []).concat([`Capabilities: ${this.actTxt() || '—'}`]).concat(WF.map(w => `${w.n} — ${st.wf[w.k] || '—'}`)) },
+      { t: 'My First Workflow', d: 'Workflow → Trigger → Context → Knowledge → Action → Validation → Output → Next', lines: [].concat(st.focus != null ? [`Focus: ${ACTIONS[st.focus]}`] : []).concat([`Capabilities: ${this.actTxt() || '—'}`]).concat(WF.map(w => `${w.n}: ${st.wf[w.k] || '—'}`)) },
       { t: 'My Boundaries', d: 'What AI can do, cannot do, and where people stay involved.', lines: bl },
       { t: 'My Network', d: 'How knowledge moves between environments.', lines: [`${st.move != null ? MOVES[st.move] : 'Knowledge'} moves: ${this.netPath()}`] },
       { t: 'My Next Experiment', d: 'One small workflow to prototype first.', lines: [this.nextExperiment()] }
@@ -1487,10 +1506,14 @@ Do not propose an entire AI platform.`;
       canvasRef: this.canvasRef, panelRef: this.panelRef,
       isEntry: s === 0, inQuest: s >= 1,
       showShadeWide: s >= 1 && !narrow && !st.reading, showShadeNarrow: s >= 1 && narrow && !st.reading && !st.brainPeek,
-      touchBrain: () => { const W = this.W; this.initAudio(); if (W && W.best) { this.sparkFrom(W.best); this.sparkFrom(W.best); this.sfx('zap'); } else if (W) { W.waves.push({ t: 0, soft: true }); } },
+      touchBrain: () => { const W = this.W; this.initAudio();
+        if (W && W.best && W.best.startsWith('key')) { const L = +W.best.slice(3) + 1; if (L !== W.cam && ((W.gc && W.gc[L]) || (W.exp && W.exp[L]))) { W.exp = Object.assign({}, W.exp, { [L]: !(W.exp && W.exp[L]) }); this.sfx('select'); return; } } if (W && W.best) { this.sparkFrom(W.best); this.sparkFrom(W.best); this.sfx('zap'); } else if (W) { W.waves.push({ t: 0, soft: true }); } },
       canvasCursor: 'crosshair',
       rootFilter: st.reading ? 'invert(1) hue-rotate(180deg)' : 'none', rootBg: st.reading ? '#0e0c0b' : '#04060b', bandBg: st.reading ? 'linear-gradient(180deg,rgba(14,12,11,.96) 0%,rgba(14,12,11,.85) 50%,rgba(14,12,11,0) 100%)' : 'linear-gradient(180deg,rgba(4,6,11,.95) 0%,rgba(4,6,11,.8) 45%,rgba(4,6,11,0) 100%)',
-      pausedOn: st.paused, playingOn: !st.paused, pauseAria: st.paused ? 'Play background animation' : 'Pause background animation', pauseBg: st.paused ? 'rgba(188,208,255,.14)' : 'transparent', pauseFc: st.paused ? '#f3f6fc' : '#98a2b8', togglePause: () => this.setState({ paused: !st.paused }),
+      pausedOn: st.paused, playingOn: !st.paused,
+      motionRegular: !st.paused && !st.slowMo, motionSlow: !st.paused && !!st.slowMo, motionStatic: !!st.paused,
+      motionAria: 'Animation: ' + (st.paused ? 'static' : st.slowMo ? 'slow' : 'regular') + ' · click to change',
+      cycleMotion: () => this.setState(st.paused ? { paused: false, slowMo: false } : st.slowMo ? { paused: true, slowMo: false } : { slowMo: true }), pauseAria: st.paused ? 'Play background animation' : 'Pause background animation', pauseBg: st.paused ? 'rgba(188,208,255,.14)' : 'transparent', pauseFc: st.paused ? '#f3f6fc' : '#98a2b8', togglePause: () => this.setState({ paused: !st.paused }),
       mutedOn: st.muted, soundBg: st.muted ? 'transparent' : 'rgba(188,208,255,.08)', readBg: st.reading ? 'rgba(188,208,255,.14)' : 'transparent', readAria: st.reading ? 'Exit reading mode' : 'Reading mode — plain document, no motion',
       docStep: s >= 1 ? `Step ${Math.min(s, 7)} of 7` : '',
       tocItems: STAGES.map((n, i) => { const here = s === i + 1, can = i + 1 <= st.reached && !here; return { no: '0' + (i + 1), n, current: here ? 'step' : 'false', disabled: !can, cursor: can ? 'pointer' : 'default', fc: here ? '#f3f6fc' : (i + 1 <= st.reached ? '#98a2b8' : '#4f5970'), bc: here ? 'rgba(222,231,255,.7)' : 'transparent', onClick: () => { if (can) this.goTo(i + 1); } }; }),
@@ -1498,7 +1521,7 @@ Do not propose an entire AI platform.`;
       soundOn: !st.muted, soundLabel: st.muted ? 'Sound off' : 'Sound on', soundAria: st.muted ? 'Turn sound on' : 'Mute sound', soundFc: st.muted ? '#7d89a3' : '#e8ecf4', toggleMute: () => this.toggleMute(),
       soundBars: [5, 10, 7, 11].map(v => ({ h: st.muted ? '2px' : v + 'px' })), showRestartTop: st.reached >= 1,
       intro1: st.intro >= 1, intro2: st.intro >= 2, intro3: st.intro >= 3, intro4: st.intro >= 4,
-      showExplore: st.intro === 2, explore: () => { this.initAudio(); this.sfx && this.sfx('move'); if (this.W) this.W.waves.push({ t: 0, soft: true }); this.setState({ intro: 3 }); },
+      showExplore: st.intro === 2, explore: () => { this.initAudio(); if (this.W) this.W.waves.push({ t: 0, soft: true }); this.setState({ intro: 3 }); },
       enter: () => this.enter(), restart: () => this.restart(),
       panelOpacity: (T || st.arriving) ? 0 : 1, panelBlur: T && !st.reading ? '12px' : '0px', panelShift: T ? (st.reading ? '-90px' : '-48px') : (st.arriving ? (st.reading ? '90px' : '40px') : '0px'),
       panelTrans: st.arriving ? 'none' : (st.reading ? 'opacity .35s ease,transform .5s cubic-bezier(.3,.7,.2,1)' : 'opacity .7s ease,filter .7s ease,transform .9s cubic-bezier(.2,.7,.2,1)'),
@@ -1536,7 +1559,7 @@ Do not propose an entire AI platform.`;
       actChips: ACTIONS.map((x, i) => chip(x, st.action.includes(i), i, e => this.pickAction(i, e.currentTarget), st.action.includes(i) ? 'do' : 'know')),
       actHint: st.action.length ? `${st.action.length} selected · choose as many as you like` : 'Choose all that apply',
       hasAction: st.action.length > 0, hasPart2: st.part2 && st.action.length > 0, showP1Continue: !st.part2 && st.action.length > 0,
-      goPart2: () => { this.sfx('move'); this.setState({ part2: true, focus: st.action.length === 1 ? st.action[0] : st.focus, wfOpen: st.wfOpen ?? 0 }, () => { this.later(() => { const p = this.panelRef.current; if (p) p.scrollTo({ top: p.scrollTop + 520, behavior: 'smooth' }); }, 120); }); },
+      goPart2: () => { this.setState({ part2: true, focus: st.action.length === 1 ? st.action[0] : st.focus, wfOpen: st.wfOpen ?? 0 }, () => { this.later(() => { const p = this.panelRef.current; if (p) p.scrollTo({ top: p.scrollTop + 520, behavior: 'smooth' }); }, 120); }); },
       p1Bc: st.part2 ? 'rgba(188,208,255,.14)' : 'rgba(222,231,255,.55)', p1Fc: st.part2 ? '#7d89a3' : '#f3f6fc', p2Bc: st.part2 ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', p2Fc: st.part2 ? '#f3f6fc' : '#5f6a82',
       focusChips: st.action.slice().sort((a, b) => a - b).map(i => { const on = st.focus === i; return { label: ACTIONS[i], sel: on, bc: on ? 'rgba(222,231,255,.55)' : 'rgba(188,208,255,.14)', bg: on ? 'rgba(188,208,255,.09)' : 'transparent', fc: on ? '#f3f6fc' : '#98a2b8', ring: on ? '#eef3ff' : 'rgba(188,208,255,.3)', dot: on ? '#eef3ff' : 'transparent', onClick: () => { this.sfx('select'); this.setState({ focus: i }); } }; }),
       wfNodes: WF.map((w, j) => { const f = !!st.wf[w.k], o = st.wfOpen === j; return { n: w.n, ring: o ? 'rgba(236,242,255,.85)' : (f ? 'rgba(222,231,255,.45)' : 'rgba(188,208,255,.2)'), dot: f ? '#eef3ff' : (o ? 'rgba(236,242,255,.5)' : 'rgba(188,208,255,.18)'), glow: f ? '0 0 10px 2px rgba(190,210,255,.8)' : 'none', lc: o ? '#f3f6fc' : (f ? '#c9d3ea' : '#6b7590'), onClick: () => this.setState({ wfOpen: o ? null : j }), onEnter: () => this.hl('wf' + j), onLeave: () => this.hl(null) }; }),
@@ -1620,7 +1643,7 @@ Do not propose an entire AI platform.`;
         ['Human Checkpoint', hum.length ? hum[0].x.t : (st.wf.validation || 'Final approval')],
         ['Environment', this.netPath()],
         ['Next Experiment', 'Ready']].map(([k2, v], i) => ({ k: k2, v, delay: (0.2 + i * 0.12).toFixed(2) + 's' })),
-      bpSections: st.fin >= 3 ? this.bpSections().map((b, i) => ({ no: '0' + (i + 1), t: b.t, d: b.d, lines: b.lines.map(t => ({ t })), delay: (0.3 + i * 0.1).toFixed(2) + 's', span: i === 6 ? '1 / -1' : 'auto', bc: i === 6 ? 'rgba(222,231,255,.4)' : 'rgba(188,208,255,.12)', nc: i === 6 ? '#bcd0ff' : '#5f6a82' })) : [],
+      bpSections: st.fin >= 3 ? this.bpSections().map((b, i) => ({ no: '0' + (i + 1), t: b.t, d: b.d, lines: b.lines.map(t => ({ t })), delay: (0.3 + i * 0.1).toFixed(2) + 's', span: 'auto', rspan: (i === 3 || i === 6) ? 'span 2' : 'auto', ord: String([0, 1, 2, 3, 4, 6, 5][i]), lfs: i === 6 ? '16px' : '14px', llh: i === 6 ? '1.7' : '1.5', lfc: i === 6 ? '#e3e8f2' : '#c9d0de', pad: i === 6 ? '30px 30px 28px' : '24px 24px 22px', bc: i === 6 ? 'rgba(222,231,255,.4)' : 'rgba(188,208,255,.12)', nc: i === 6 ? '#bcd0ff' : '#5f6a82' })) : [],
       copyBp: () => this.copy('bp', this.bpMarkdown()), copyBpLabel: st.copied === 'bp' ? 'Copied' : 'Copy blueprint',
       exportBp: () => { const b = new Blob([this.bpMarkdown()], { type: 'text/markdown' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'my-ai-work-brain-blueprint.md'; document.body.appendChild(a); a.click(); a.remove(); },
       saveBp: () => { try { localStorage.setItem('hidden-brain-blueprint', this.bpMarkdown()); } catch (e) { } this.setState({ saved: true }); },
@@ -1628,18 +1651,18 @@ Do not propose an entire AI platform.`;
       mailFormOpen: !!st.mailOpen, mailBtnBg: st.mailOpen ? 'rgba(188,208,255,.1)' : 'transparent',
       mailBtnLabel: st.mailStatus === 'sent' ? 'Sent to your inbox' : 'Email me my blueprint',
       mailVal: st.mailVal || '', onMail: e => this.setState({ mailVal: e.target.value, mailStatus: null }),
-      mailBusy: st.mailStatus === 'sending', mailSendLabel: st.mailStatus === 'sending' ? 'Sending…' : st.mailStatus === 'sent' ? 'Sent' : 'Send',
-      mailNote: st.mailStatus === 'sent' ? 'Sent. Check your inbox — it has your blueprint and a link to come back.' : st.mailStatus === 'error' ? 'Couldn\u2019t send right now. Try again, or use Export .md.' : 'Your full blueprint arrives as an email. No spam, just this.',
+      mailBusy: st.mailStatus === 'sending', mailSendLabel: st.mailStatus === 'sending' ? 'Sending…' : st.mailStatus === 'sent' ? 'Sent ✓' : 'Email it to me',
+      mailNote: st.mailStatus === 'sent' ? 'Sent. Check your inbox — it has your blueprint and a link to come back.' : st.mailStatus === 'error' ? 'Couldn\u2019t send right now. Try again, or use Export .md.' : 'Your blueprint and all seven prompts, pre-filled with your answers. One email, no list.',
       mailNoteFc: st.mailStatus === 'error' ? '#f0a39a' : st.mailStatus === 'sent' ? '#c9d8ff' : '#7d89a3',
       sendMail: e => this.sendMail(e),
       toolkit: st.fin >= 3 ? this.toolkitData().map(([name, purpose, expl, text], i) => ({ no: '0' + (i + 1), name, purpose, expl, text, open: st.openCard === i, span: st.openCard === i ? '1 / -1' : 'auto', delay: (0.2 + i * 0.08).toFixed(2) + 's', toggleLabel: st.openCard === i ? 'Hide' : 'Read', onToggle: () => this.setState({ openCard: st.openCard === i ? null : i }), copyLabel: st.copied === 'tk' + i ? 'Copied' : 'Copy', onCopy: () => this.copy('tk' + i, text) })) : [],
 
       showDrawer: s >= 1 && !st.reading && !narrow,
-      canvasOp: (narrow && s >= 1 && st.brainAway && !st.brainPeek) ? 0 : 1,
+      canvasOp: (((narrow && s >= 1) || (!narrow && results)) && st.brainAway && !st.brainPeek) ? 0 : 1,
       panelVis: st.brainPeek ? 0 : 1, panelPe: st.brainPeek ? 'none' : 'auto',
-      onPanelScroll: e => { if (!this.state.narrow) return; const away = e.currentTarget.scrollTop > window.innerHeight * 0.16; if (away !== !!this.state.brainAway) this.setState({ brainAway: away }); },
-      showBrainPill: narrow && s >= 1 && !st.reading && st.brainAway && !st.brainPeek && !results,
-      brainPeek: !!st.brainPeek && narrow && !st.reading,
+      onPanelScroll: e => { if (!this.state.narrow && !(this.state.stage >= 7 && this.state.fin >= 3 && this.state.awake)) return; const away = e.currentTarget.scrollTop > window.innerHeight * 0.16; if (away !== !!this.state.brainAway) this.setState({ brainAway: away }); },
+      showBrainPill: ((narrow && !results) || (!narrow && results)) && s >= 1 && !st.reading && st.brainAway && !st.brainPeek,
+      brainPeek: !!st.brainPeek && (narrow || results) && !st.reading,
       openPeek: () => this.setState({ brainPeek: true, moreOpen: false }), closePeek: () => this.setState({ brainPeek: false }), drawerOpen: st.drawer, drawerX: st.drawer ? '0px' : '300px', drawerChevron: st.drawer ? '›' : '‹',
       toggleDrawer: () => this.setState({ drawer: !st.drawer, solo: null }),
       tabDots: LAYERS.map(l => { const on = st.reached >= l.L && !st.hidden.includes(l.L); return { bg: on ? '#eef3ff' : 'rgba(188,208,255,.18)', glow: on ? '0 0 6px 1px rgba(190,210,255,.6)' : 'none' }; }),
@@ -1671,8 +1694,8 @@ Do not propose an entire AI platform.`;
       mobNo: '0' + Math.min(Math.max(s, 1), 7), mobKey: KEYS[Math.min(Math.max(s, 1), 7) - 1], mobName: STAGES[Math.min(Math.max(s, 1), 7) - 1],
       mobSegs: KEYS.map((k, i) => ({ bg: i + 1 === s ? '#eef3ff' : (i + 1 <= st.reached ? 'rgba(188,208,255,.4)' : 'rgba(188,208,255,.1)') })),
       moreOpen: !!st.moreOpen, moreBg: st.moreOpen ? 'rgba(188,208,255,.14)' : 'transparent', toggleMore: () => this.setState({ moreOpen: !st.moreOpen }),
-      pauseMenuLabel: st.paused ? 'Play animation' : 'Pause animation',
-      menuPause: () => this.setState({ paused: !st.paused, moreOpen: false }),
+      pauseMenuLabel: 'Animation: ' + (st.paused ? 'Static' : st.slowMo ? 'Slow' : 'Regular'),
+      menuPause: () => this.setState(st.paused ? { paused: false, slowMo: false } : st.slowMo ? { paused: true, slowMo: false } : { slowMo: true }),
       menuRestart: () => { this.setState({ moreOpen: false }); this.restart(); },
       mapDots: KEYS.map((n, i) => {
         const on = st.keys[i], here = camS - 1 === i, can = i + 1 <= st.reached && !here;
